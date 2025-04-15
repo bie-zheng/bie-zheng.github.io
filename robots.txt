@@ -1,2 +1,2 @@
 User-Agent: *
-Sitemap: //localhost:1313/sitemap.xml
+Sitemap: //bie-zheng.github.io:1313/sitemap.xml
