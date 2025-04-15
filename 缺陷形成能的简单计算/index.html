@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta http-equiv="X-Clacks-Overhead" content="GNU Terry Pratchett" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="shortcut icon" href="http://localhost:1313/images/favicon.png" />
+<title>缺陷形成能的简单计算 | ʕ•ᴥ•ʔ 橙红色时雨 Blog</title>
+<meta name="title" content="缺陷形成能的简单计算" />
+<meta name="description" content="使用lammps简单计算下缺陷形成能，包括空位和间隙子的" />
+<meta name="keywords" content="LAMMPS,物理," />
+
+
+<meta property="og:url" content="http://localhost:1313/%E7%BC%BA%E9%99%B7%E5%BD%A2%E6%88%90%E8%83%BD%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A1%E7%AE%97/">
+  <meta property="og:site_name" content="ʕ•ᴥ•ʔ 橙红色时雨 Blog">
+  <meta property="og:title" content="缺陷形成能的简单计算">
+  <meta property="og:description" content="使用lammps简单计算下缺陷形成能，包括空位和间隙子的">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="blog">
+    <meta property="article:published_time" content="2025-04-09T00:00:00+00:00">
+    <meta property="article:modified_time" content="2025-04-09T00:00:00+00:00">
+    <meta property="article:tag" content="LAMMPS">
+    <meta property="article:tag" content="物理">
+    <meta property="og:image" content="http://localhost:1313/images/share.png">
+
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="http://localhost:1313/images/share.png">
+  <meta name="twitter:title" content="缺陷形成能的简单计算">
+  <meta name="twitter:description" content="使用lammps简单计算下缺陷形成能，包括空位和间隙子的">
+
+
+
+
+  <meta itemprop="name" content="缺陷形成能的简单计算">
+  <meta itemprop="description" content="使用lammps简单计算下缺陷形成能，包括空位和间隙子的">
+  <meta itemprop="datePublished" content="2025-04-09T00:00:00+00:00">
+  <meta itemprop="dateModified" content="2025-04-09T00:00:00+00:00">
+  <meta itemprop="wordCount" content="399">
+  <meta itemprop="image" content="http://localhost:1313/images/share.png">
+  <meta itemprop="keywords" content="LAMMPS,物理">
+<meta name="referrer" content="no-referrer-when-downgrade" />
+
+  <style>
+  :root {
+      --width: 720px;
+      --font-main: "Smiley Sans Oblique";
+      --font-secondary: "LXGW WenKai";
+      --font-scale: 1em;
+      --background-color: #fff;
+      --heading-color: #222;
+      --text-color: #444;
+      --link-color: #3273dc;
+      --visited-color:  #8b6fcb;
+      --code-background-color: #f2f2f2;
+      --code-color: #222;
+      --blockquote-color: #222;
+  }
+
+  @media (prefers-color-scheme: dark) {
+      :root {
+          --background-color: #01242e;
+          --heading-color: #eee;
+          --text-color: #ddd;
+          --link-color: #8cc2dd;
+          --visited-color:  #8b6fcb;
+          --code-background-color: #000;
+          --code-color: #ddd;
+          --blockquote-color: #ccc;
+      }
+  }
+
+  body {
+      font-family: var(--font-secondary);
+      font-size: var(--font-scale);
+      margin: auto;
+      padding: 20px;
+      max-width: var(--width);
+      text-align: left;
+      background-color: var(--background-color);
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      line-height: 1.5;
+      color: var(--text-color);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+      font-family: var(--font-main);
+      color: var(--heading-color);
+  }
+
+  a {
+      color: var(--link-color);
+      cursor: pointer;
+      text-decoration: none;
+  }
+
+  a:hover {
+      text-decoration: underline;
+  }
+
+  nav a {
+      margin-right: 8px;
+  }
+
+  strong, b {
+      color: var(--heading-color);
+  }
+
+  button {
+      margin: 0;
+      cursor: pointer;
+  }
+
+  time {
+   	font-family: monospace;
+    	font-style: normal;
+    	font-size: 15px;
+  }
+
+  main {
+      line-height: 1.6;
+  }
+
+  table {
+      width: 100%;
+  }
+
+  hr {
+      border: 0;
+      border-top: 1px dashed;
+  }
+
+  img {
+      max-width: 100%;
+  }
+
+  code {
+      font-family: "LXGW WenKai";
+      padding: 2px;
+      background-color: var(--code-background-color);
+      color: var(--code-color);
+      border-radius: 3px;
+  }
+
+  blockquote {
+      border-left: 1px solid #999;
+      color: var(--code-color);
+      padding-left: 20px;
+      font-style: italic;
+  }
+
+  footer {
+      padding: 25px 0;
+      text-align: center;
+  }
+
+  .title:hover {
+      text-decoration: none;
+  }
+
+  .title h1 {
+      font-size: 1.5em;
+  }
+
+  .inline {
+      width: auto !important;
+  }
+
+  .highlight, .code {
+      padding: 1px 15px;
+      background-color: var(--code-background-color);
+      color: var(--code-color);
+      border-radius: 3px;
+      margin-block-start: 1em;
+      margin-block-end: 1em;
+      overflow-x: auto;
+  }
+
+   
+  ul.blog-posts {
+      list-style-type: none;
+      padding: unset;
+  }
+
+  ul.blog-posts li {
+      display: flex;
+  }
+
+  ul.blog-posts li span {
+      flex: 0 0 130px;
+  }
+
+  ul.blog-posts li a:visited {
+      color: var(--visited-color);
+  }
+
+
+  body, .article-page {
+    font-family:"LXGW WenKai", sans-serif;
+    }
+
+</style>
+
+
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)'], ['$', '$']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+ 
+
+
+<link rel='stylesheet' href='https://chinese-fonts-cdn.deno.dev/packages/lxgwwenkai/dist/LXGWWenKai-Bold/result.css' /> 
+<link rel='stylesheet' href='https://chinese-fonts-cdn.deno.dev/packages/stdgt/dist/%E4%B8%8A%E5%9B%BE%E4%B8%9C%E8%A7%82%E4%BD%93-%E7%B2%97%E4%BD%93/result.css' /> 
+<link rel='stylesheet' href='https://chinese-fonts-cdn.deno.dev/packages/dyh/dist/SmileySans-Oblique/result.css' /> 
+
+</head>
+
+<body>
+  <header><a href="/" class="title">
+  <h2>ʕ•ᴥ•ʔ 橙红色时雨 Blog</h2>
+</a>
+<nav><a href="/">Home</a>
+
+<a href="/bear/">友链</a>
+
+
+<a href="/blog">Blog</a>
+
+</nav>
+</header>
+  <main>
+
+<h1>缺陷形成能的简单计算</h1>
+<p>
+  <i>
+    <time datetime='2025-04-09'>
+      09 Apr, 2025
+    </time>
+  </i>
+</p>
+
+<content>
+  <p>形成能的计算</p>
+<p>空位形成能：</p>
+$$
+E_f = E_{\text{defective}} - \frac{N-1}{N} E_{\text{perfect}}
+$$<p>其中：</p>
+<p>$ E_{perfect} $：完整晶体的总能量。</p>
+<p>$ E_{defective} $：含有一个空位的缺陷晶体的总能量。</p>
+<p>其中N为完整晶体的原子数,含义就是（N个原子体系删除一个原子形成空位）的体系总能量，减去（N-1）个原子的无缺陷晶体的能量，对应的就是形成空位需要的能量。</p>
+<p>对应的，间隙形成能就是（N个原子体系加一个原子形成间隙原子）的体系总能量，减去（N+1）个原子的无缺陷晶体的能量，对应的就是形成间隙原子需要的能量。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#007020"># FeCr晶体计算不同Cr比例的空位形成能
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span><span style="color:#007020"></span>clear
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>variable	seed loop <span style="color:#40a070">100</span> <span style="">#随机数是从</span><span style="color:#40a070">1</span><span style="">到</span><span style="color:#40a070">100</span><span style="">的一个数组</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>variable Cr_scale index <span style="color:#40a070">0.01</span> <span style="color:#40a070">0.02</span> <span style="color:#40a070">0.03</span> <span style="color:#40a070">0.04</span> <span style="color:#40a070">0.05</span> <span style="color:#40a070">0.06</span> <span style="color:#40a070">0.07</span> <span style="color:#40a070">0.08</span> <span style="color:#40a070">0.09</span> <span style="color:#40a070">0.10</span> <span style="color:#40a070">0.11</span> <span style="color:#40a070">0.12</span> <span style="color:#40a070">0.13</span> <span style="color:#40a070">0.14</span> <span style="color:#40a070">0.15</span> <span style="color:#40a070">0.16</span> <span style="color:#40a070">0.17</span> <span style="color:#40a070">0.18</span> <span style="color:#40a070">0.19</span> <span style="color:#40a070">0.20</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span><span style="color:#007020">#Cr的比例是从0.01到0.20的数组
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span><span style="color:#007020"></span>variable block_size equal <span style="color:#40a070">30</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span><span style="color:#007020">#盒子大小是30
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span><span style="color:#007020">#--------------------- INITIALIZAITION ---------------------
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span><span style="color:#007020"></span>units metal
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>boundary p p p
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>atom_style atomic
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span><span style="color:#007020"># --------------------- ATOM DEFINITION ---------------------
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span><span style="color:#007020"></span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>lattice bcc <span style="color:#40a070">2.87</span>                  <span style="">#</span> BCC晶格<span style="">，晶格常数</span><span style="color:#40a070">2.87</span><span style="">Å</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>region whole block <span style="color:#40a070">0</span> <span style="">$</span>{block_size} <span style="color:#40a070">0</span> <span style="">$</span>{block_size} <span style="color:#40a070">0</span> <span style="">$</span>{block_size} units lattice  <span style="">#</span> <span style="">定义</span><span style="color:#40a070">50</span><span style="">×</span><span style="color:#40a070">50</span><span style="">×</span><span style="color:#40a070">50</span><span style="">晶格的模拟盒子</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span>create_box <span style="color:#40a070">2</span> whole                <span style="">#</span> <span style="">创建包含</span><span style="color:#40a070">2</span><span style="">种原子类型的盒子</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span><span>create_atoms <span style="color:#40a070">1</span> region whole       <span style="">#</span> <span style="">在区域内填充类型</span><span style="color:#40a070">1</span><span style="">原子（初始为</span>Fe<span style="">）</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span><span>set type <span style="color:#40a070">1</span> type<span style="color:#666">/</span>ratio <span style="color:#40a070">2</span> <span style="">$</span>{Cr_scale} <span style="">$</span>{seed}  <span style="">#</span> <span style="">将</span>Fe原子随机替换为Cr<span style="">（类型</span><span style="color:#40a070">2</span><span style="">）</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span><span>mass <span style="color:#40a070">1</span> <span style="color:#40a070">55.845</span>                     <span style="">#</span> Fe的原子质量<span style="">（单位：</span>g<span style="color:#666">/</span>mol<span style="">）</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span><span>mass <span style="color:#40a070">2</span> <span style="color:#40a070">51.996</span>                     <span style="">#</span> Cr的原子质量
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21</span><span><span style="color:#007020"># --------------------- FORCE FIELDS ---------------------
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22</span><span><span style="color:#007020"></span>pair_style eam<span style="color:#666">/</span>alloy              <span style="">#</span> <span style="">使用</span>EAM合金势
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23</span><span>pair_coeff <span style="color:#666">*</span> <span style="color:#666">*</span> Fe_Cr_Eich_2015_TBM_lammps.eam.alloy.txt Fe Cr  <span style="">#</span> <span style="">势函数文件路径</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25</span><span><span style="color:#007020">#--------------------- PERFECT CRYSTAL ---------------------
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26</span><span><span style="color:#007020"></span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27</span><span>min_style cg
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28</span><span>minimize <span style="color:#40a070">1e-10</span> <span style="color:#40a070">1e-10</span> <span style="color:#40a070">1000</span> <span style="color:#40a070">1000</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29</span><span>variable E_perfect equal pe
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30</span><span>variable E_perfect_1 equal <span style="">$</span>{E_perfect}  <span style="">#</span>pe的值会变<span style="">，所以多加一个变量储存</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31</span><span>variable N_perfect equal count(all)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32</span><span>write_data perfect_fe.data
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34</span><span><span style="color:#007020">#--------------------- DEFECT SYSTEM ---------------------
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35</span><span><span style="color:#007020">#group del id 100
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36</span><span><span style="color:#007020">#print &#34;N_perfect = ${N_perfect}&#34;
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37</span><span><span style="color:#007020">#print ${seed}
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38</span><span><span style="color:#007020"></span>variable rand_atom_id equal floor(random(<span style="color:#40a070">1</span>,<span style="">$</span>{N_perfect},<span style="">$</span>{seed}))
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39</span><span>variable del_id equal <span style="">$</span>{rand_atom_id}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40</span><span>group del id <span style="">$</span>{del_id}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41</span><span>delete_atoms group del
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42</span><span>pair_style eam<span style="color:#666">/</span>alloy              <span style="">#</span> <span style="">使用</span>EAM合金势
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43</span><span>pair_coeff <span style="color:#666">*</span> <span style="color:#666">*</span> Fe_Cr_Eich_2015_TBM_lammps.eam.alloy.txt Fe Cr  <span style="">#</span> <span style="">势函数文件路径</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44</span><span>min_style cg
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45</span><span>minimize <span style="color:#40a070">1e-10</span> <span style="color:#40a070">1e-10</span> <span style="color:#40a070">1000</span> <span style="color:#40a070">1000</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46</span><span>variable E_defect equal pe
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47</span><span>variable E_defect1 equal <span style="">$</span>{E_defect} <span style="">#</span>pe的值会变<span style="">，所以多加一个变量储存</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49</span><span><span style="color:#007020"># 结果输出
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50</span><span><span style="color:#007020"></span>variable mu_Fe equal <span style="">$</span>{E_perfect_1}<span style="color:#666">/</span><span style="">$</span>{N_perfect}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51</span><span>variable E_form equal <span style="">$</span>{E_defect1}<span style="color:#666">-</span><span style="">$</span>{E_perfect_1}<span style="color:#666">+</span><span style="">$</span>{mu_Fe}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53</span><span><span style="color:#007020"># 将输出结果
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54</span><span><span style="color:#007020"></span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55</span><span>print <span style="color:#4070a0">&#34;Cr_scale = ${Cr_scale} Vacancy formation energy = ${E_form} eV&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57</span><span><span style="color:#007020"># -------------------跳转下一步-----------------------------------
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58</span><span><span style="color:#007020"></span>clear
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59</span><span>next seed
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60</span><span>jump FeV3.lmp <span style="">#改为脚本的文件名称</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">61</span><span>next Cr_scale
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">62</span><span>jump FeV3.lmp
+</span></span></code></pre></div><p>后续处理，重命名log.lammps为FeV3.log.lammps</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span><span style="color:#60a0b0;font-style:italic">#coding=utf-8</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span><span style="color:#60a0b0;font-style:italic">#Fv3.lmp的处理文件</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span><span style="color:#007020;font-weight:bold">import</span> <span style="color:#0e84b5;font-weight:bold">re</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span><span style="color:#007020;font-weight:bold">import</span> <span style="color:#0e84b5;font-weight:bold">os</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span><span style="color:#007020;font-weight:bold">from</span> <span style="color:#0e84b5;font-weight:bold">collections</span> <span style="color:#007020;font-weight:bold">import</span> defaultdict
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span><span style="color:#60a0b0;font-style:italic"># 定义正则表达式来匹配Cr_scale和Vacancy formation energy</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>pattern <span style="color:#666">=</span> re<span style="color:#666">.</span>compile(<span style="color:#4070a0">r</span><span style="color:#4070a0">&#39;Cr_scale\s*=\s*([\d.]+)\s*Vacancy formation energy\s*=\s*([\d.]+)\s*eV&#39;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span><span style="color:#60a0b0;font-style:italic"># 读取输入文件</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>input_filename <span style="color:#666">=</span> os<span style="color:#666">.</span>path<span style="color:#666">.</span>join(os<span style="color:#666">.</span>path<span style="color:#666">.</span>dirname(__file__), <span style="color:#4070a0">&#39;FeV3.log.lammps&#39;</span>) <span style="color:#60a0b0;font-style:italic"># 替换为你的输入文件名</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span><span style="color:#007020;font-weight:bold">with</span> <span style="color:#007020">open</span>(input_filename, <span style="color:#4070a0">&#39;r&#39;</span>,encoding<span style="color:#666">=</span><span style="color:#4070a0">&#39;utf-8&#39;</span>) <span style="color:#007020;font-weight:bold">as</span> file:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>    lines <span style="color:#666">=</span> file<span style="color:#666">.</span>readlines()
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span><span style="color:#60a0b0;font-style:italic"># 初始化字典来存储Cr_scale和对应的Vacancy formation energy</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span><span>cr_scale_dict <span style="color:#666">=</span> defaultdict(<span style="color:#007020">list</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span><span><span style="color:#60a0b0;font-style:italic"># 匹配并提取数据</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span><span><span style="color:#007020;font-weight:bold">for</span> line <span style="color:#007020;font-weight:bold">in</span> lines:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21</span><span>    <span style="color:#007020;font-weight:bold">match</span> <span style="color:#666">=</span> pattern<span style="color:#666">.</span>search(line)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22</span><span>    <span style="color:#007020;font-weight:bold">if</span> <span style="color:#007020;font-weight:bold">match</span>:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23</span><span>        cr_scale <span style="color:#666">=</span> <span style="color:#007020">float</span>(<span style="color:#007020;font-weight:bold">match</span><span style="color:#666">.</span>group(<span style="color:#40a070">1</span>))
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24</span><span>        vacancy_energy <span style="color:#666">=</span> <span style="color:#007020">float</span>(<span style="color:#007020;font-weight:bold">match</span><span style="color:#666">.</span>group(<span style="color:#40a070">2</span>))
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25</span><span>        cr_scale_dict[cr_scale]<span style="color:#666">.</span>append(vacancy_energy)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27</span><span><span style="color:#60a0b0;font-style:italic"># 输出第一个文件：输出所有数据，第一列是Cr比例，第二列是对应的空位形成能</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28</span><span>output_filename1 <span style="color:#666">=</span> os<span style="color:#666">.</span>path<span style="color:#666">.</span>splitext(os<span style="color:#666">.</span>path<span style="color:#666">.</span>basename(__file__))[<span style="color:#40a070">0</span>] <span style="color:#666">+</span> <span style="color:#4070a0">&#39;.result1.txt&#39;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29</span><span><span style="color:#007020;font-weight:bold">with</span> <span style="color:#007020">open</span>(output_filename1, <span style="color:#4070a0">&#39;w&#39;</span>) <span style="color:#007020;font-weight:bold">as</span> file:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30</span><span>    <span style="color:#007020;font-weight:bold">for</span> cr_scale, energies <span style="color:#007020;font-weight:bold">in</span> cr_scale_dict<span style="color:#666">.</span>items():
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31</span><span>        <span style="color:#007020;font-weight:bold">for</span> energy <span style="color:#007020;font-weight:bold">in</span> energies:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32</span><span>            file<span style="color:#666">.</span>write(<span style="color:#4070a0">f</span><span style="color:#4070a0">&#39;</span><span style="color:#70a0d0">{</span>cr_scale<span style="color:#70a0d0">}</span><span style="color:#4070a0;font-weight:bold">\t</span><span style="color:#70a0d0">{</span>energy<span style="color:#70a0d0">}</span><span style="color:#4070a0;font-weight:bold">\n</span><span style="color:#4070a0">&#39;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34</span><span><span style="color:#60a0b0;font-style:italic"># 输出第二个文件：第一列是Cr比例，第二列是空位形成能的均值，最大值，最小值</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35</span><span>output_filename2 <span style="color:#666">=</span> os<span style="color:#666">.</span>path<span style="color:#666">.</span>splitext(os<span style="color:#666">.</span>path<span style="color:#666">.</span>basename(__file__))[<span style="color:#40a070">0</span>] <span style="color:#666">+</span> <span style="color:#4070a0">&#39;.result2.txt&#39;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36</span><span><span style="color:#007020;font-weight:bold">with</span> <span style="color:#007020">open</span>(output_filename2, <span style="color:#4070a0">&#39;w&#39;</span>) <span style="color:#007020;font-weight:bold">as</span> file:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37</span><span>    <span style="color:#007020;font-weight:bold">for</span> cr_scale, energies <span style="color:#007020;font-weight:bold">in</span> cr_scale_dict<span style="color:#666">.</span>items():
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38</span><span>        avg_energy <span style="color:#666">=</span> <span style="color:#007020">sum</span>(energies) <span style="color:#666">/</span> <span style="color:#007020">len</span>(energies)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39</span><span>        max_energy <span style="color:#666">=</span> <span style="color:#007020">max</span>(energies)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40</span><span>        min_energy <span style="color:#666">=</span> <span style="color:#007020">min</span>(energies)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41</span><span>        file<span style="color:#666">.</span>write(<span style="color:#4070a0">f</span><span style="color:#4070a0">&#39;</span><span style="color:#70a0d0">{</span>cr_scale<span style="color:#70a0d0">}</span><span style="color:#4070a0;font-weight:bold">\t</span><span style="color:#70a0d0">{</span>avg_energy<span style="color:#70a0d0">}</span><span style="color:#4070a0;font-weight:bold">\t</span><span style="color:#70a0d0">{</span>max_energy<span style="color:#70a0d0">}</span><span style="color:#4070a0;font-weight:bold">\t</span><span style="color:#70a0d0">{</span>min_energy<span style="color:#70a0d0">}</span><span style="color:#4070a0;font-weight:bold">\n</span><span style="color:#4070a0">&#39;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44</span><span><span style="color:#007020">print</span>(<span style="color:#4070a0">f</span><span style="color:#4070a0">&#39;结果已写入 </span><span style="color:#70a0d0">{</span>output_filename1<span style="color:#70a0d0">}</span><span style="color:#4070a0">, </span><span style="color:#70a0d0">{</span>output_filename2<span style="color:#70a0d0">}</span><span style="color:#4070a0">&#39;</span>)
+</span></span></code></pre></div>
+</content>
+<p>
+  
+  <a href="http://localhost:1313/blog/lammps/">#LAMMPS</a>
+  
+  <a href="http://localhost:1313/blog/%E7%89%A9%E7%90%86/">#物理</a>
+  
+</p>
+
+  </main>
+  <footer>
+</footer>
+
+    
+</body>
+
+</html>

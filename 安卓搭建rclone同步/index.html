@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta http-equiv="X-Clacks-Overhead" content="GNU Terry Pratchett" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="shortcut icon" href="http://localhost:1313/images/favicon.png" />
+<title>安卓搭建rclone同步 | ʕ•ᴥ•ʔ 橙红色时雨 Blog</title>
+<meta name="title" content="安卓搭建rclone同步" />
+<meta name="description" content="主要目的是为了平替Foldersync，需要用到Termux和alist
+因为FolderSync的webdav协议只支持https，但是alist只支持http，设置https也挺麻烦的，所以就没有去弄。
+首先你需要安装一个Termux，然后你要配置一个Alist
+Termux换源之后，直接pkg install alist，安装alist，之后的内容就和电脑版差不多，可以参考着来。
+别名
+别名的设置，alist server如果感觉难记，那就写个别名
+方法是创建名称为 .bashrc 的文件，然后在文件里面添加
+1alias a1=&#39;alist server&#39;
+其中a1就是别名，直接在命令行输入a1就可以运行alist server
+使用source .bashrc来启用这个命令，source后面跟的是.bashrc的位置。
+可以用mt管理器来玩termux，会直接显示termux视角下的文件系统，相当于图像化管理了。
+rclone
+然后是rclone的配置，同样是pkg install rclone，安装rclone。
+然后是配置
+直接rclone config 进入配置，然后选择新建配置的对应字母。
+配置需要设置
+配置名称：自己设置，比如我设置成aaa
+url：http://127.0.0.1:5244/dav/baidu_123(dav后填写的是你自己想挂载的路径)
+用户名：alist中设置的
+密码：alist中设置的
+ 1Option vendor.
+ 2Name of the WebDAV site/service/software you are using.
+ 3Choose a number from below, or type in your own value.
+ 4Press Enter to leave empty.
+ 5 1 / Fastmail Files
+ 6   \ (fastmail)
+ 7 2 / Nextcloud
+ 8   \ (nextcloud)
+ 9 3 / Owncloud
+10   \ (owncloud)
+11 4 / Sharepoint Online, authenticated by Microsoft account
+12   \ (sharepoint)
+13 5 / Sharepoint with NTLM authentication, usually self-hosted or on-premises
+14   \ (sharepoint-ntlm)
+15 6 / rclone WebDAV server to serve a remote over HTTP via the WebDAV protocol
+16   \ (rclone)
+17 7 / Other site/service or software
+18   \ (other)
+19vendor&gt; 6
+别的高级设置 head什么的都可以不填直接空住，点回车（选择默认的选项）。" />
+<meta name="keywords" content="玩," />
+
+
+<meta property="og:url" content="http://localhost:1313/%E5%AE%89%E5%8D%93%E6%90%AD%E5%BB%BArclone%E5%90%8C%E6%AD%A5/">
+  <meta property="og:site_name" content="ʕ•ᴥ•ʔ 橙红色时雨 Blog">
+  <meta property="og:title" content="安卓搭建rclone同步">
+  <meta property="og:description" content="主要目的是为了平替Foldersync，需要用到Termux和alist
+因为FolderSync的webdav协议只支持https，但是alist只支持http，设置https也挺麻烦的，所以就没有去弄。
+首先你需要安装一个Termux，然后你要配置一个Alist
+Termux换源之后，直接pkg install alist，安装alist，之后的内容就和电脑版差不多，可以参考着来。
+别名
+别名的设置，alist server如果感觉难记，那就写个别名
+方法是创建名称为 .bashrc 的文件，然后在文件里面添加
+1alias a1=&#39;alist server&#39; 其中a1就是别名，直接在命令行输入a1就可以运行alist server
+使用source .bashrc来启用这个命令，source后面跟的是.bashrc的位置。
+可以用mt管理器来玩termux，会直接显示termux视角下的文件系统，相当于图像化管理了。
+rclone 然后是rclone的配置，同样是pkg install rclone，安装rclone。
+然后是配置
+直接rclone config 进入配置，然后选择新建配置的对应字母。
+配置需要设置 配置名称：自己设置，比如我设置成aaa url：http://127.0.0.1:5244/dav/baidu_123(dav后填写的是你自己想挂载的路径) 用户名：alist中设置的 密码：alist中设置的
+1Option vendor. 2Name of the WebDAV site/service/software you are using. 3Choose a number from below, or type in your own value. 4Press Enter to leave empty. 5 1 / Fastmail Files 6 \ (fastmail) 7 2 / Nextcloud 8 \ (nextcloud) 9 3 / Owncloud 10 \ (owncloud) 11 4 / Sharepoint Online, authenticated by Microsoft account 12 \ (sharepoint) 13 5 / Sharepoint with NTLM authentication, usually self-hosted or on-premises 14 \ (sharepoint-ntlm) 15 6 / rclone WebDAV server to serve a remote over HTTP via the WebDAV protocol 16 \ (rclone) 17 7 / Other site/service or software 18 \ (other) 19vendor&gt; 6 别的高级设置 head什么的都可以不填直接空住，点回车（选择默认的选项）。">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="blog">
+    <meta property="article:published_time" content="2025-04-11T00:00:00+00:00">
+    <meta property="article:modified_time" content="2025-04-11T00:00:00+00:00">
+    <meta property="article:tag" content="玩">
+    <meta property="og:image" content="http://localhost:1313/images/share.png">
+
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="http://localhost:1313/images/share.png">
+  <meta name="twitter:title" content="安卓搭建rclone同步">
+  <meta name="twitter:description" content="主要目的是为了平替Foldersync，需要用到Termux和alist
+因为FolderSync的webdav协议只支持https，但是alist只支持http，设置https也挺麻烦的，所以就没有去弄。
+首先你需要安装一个Termux，然后你要配置一个Alist
+Termux换源之后，直接pkg install alist，安装alist，之后的内容就和电脑版差不多，可以参考着来。
+别名
+别名的设置，alist server如果感觉难记，那就写个别名
+方法是创建名称为 .bashrc 的文件，然后在文件里面添加
+1alias a1=&#39;alist server&#39; 其中a1就是别名，直接在命令行输入a1就可以运行alist server
+使用source .bashrc来启用这个命令，source后面跟的是.bashrc的位置。
+可以用mt管理器来玩termux，会直接显示termux视角下的文件系统，相当于图像化管理了。
+rclone 然后是rclone的配置，同样是pkg install rclone，安装rclone。
+然后是配置
+直接rclone config 进入配置，然后选择新建配置的对应字母。
+配置需要设置 配置名称：自己设置，比如我设置成aaa url：http://127.0.0.1:5244/dav/baidu_123(dav后填写的是你自己想挂载的路径) 用户名：alist中设置的 密码：alist中设置的
+1Option vendor. 2Name of the WebDAV site/service/software you are using. 3Choose a number from below, or type in your own value. 4Press Enter to leave empty. 5 1 / Fastmail Files 6 \ (fastmail) 7 2 / Nextcloud 8 \ (nextcloud) 9 3 / Owncloud 10 \ (owncloud) 11 4 / Sharepoint Online, authenticated by Microsoft account 12 \ (sharepoint) 13 5 / Sharepoint with NTLM authentication, usually self-hosted or on-premises 14 \ (sharepoint-ntlm) 15 6 / rclone WebDAV server to serve a remote over HTTP via the WebDAV protocol 16 \ (rclone) 17 7 / Other site/service or software 18 \ (other) 19vendor&gt; 6 别的高级设置 head什么的都可以不填直接空住，点回车（选择默认的选项）。">
+
+
+
+
+  <meta itemprop="name" content="安卓搭建rclone同步">
+  <meta itemprop="description" content="主要目的是为了平替Foldersync，需要用到Termux和alist
+因为FolderSync的webdav协议只支持https，但是alist只支持http，设置https也挺麻烦的，所以就没有去弄。
+首先你需要安装一个Termux，然后你要配置一个Alist
+Termux换源之后，直接pkg install alist，安装alist，之后的内容就和电脑版差不多，可以参考着来。
+别名
+别名的设置，alist server如果感觉难记，那就写个别名
+方法是创建名称为 .bashrc 的文件，然后在文件里面添加
+1alias a1=&#39;alist server&#39; 其中a1就是别名，直接在命令行输入a1就可以运行alist server
+使用source .bashrc来启用这个命令，source后面跟的是.bashrc的位置。
+可以用mt管理器来玩termux，会直接显示termux视角下的文件系统，相当于图像化管理了。
+rclone 然后是rclone的配置，同样是pkg install rclone，安装rclone。
+然后是配置
+直接rclone config 进入配置，然后选择新建配置的对应字母。
+配置需要设置 配置名称：自己设置，比如我设置成aaa url：http://127.0.0.1:5244/dav/baidu_123(dav后填写的是你自己想挂载的路径) 用户名：alist中设置的 密码：alist中设置的
+1Option vendor. 2Name of the WebDAV site/service/software you are using. 3Choose a number from below, or type in your own value. 4Press Enter to leave empty. 5 1 / Fastmail Files 6 \ (fastmail) 7 2 / Nextcloud 8 \ (nextcloud) 9 3 / Owncloud 10 \ (owncloud) 11 4 / Sharepoint Online, authenticated by Microsoft account 12 \ (sharepoint) 13 5 / Sharepoint with NTLM authentication, usually self-hosted or on-premises 14 \ (sharepoint-ntlm) 15 6 / rclone WebDAV server to serve a remote over HTTP via the WebDAV protocol 16 \ (rclone) 17 7 / Other site/service or software 18 \ (other) 19vendor&gt; 6 别的高级设置 head什么的都可以不填直接空住，点回车（选择默认的选项）。">
+  <meta itemprop="datePublished" content="2025-04-11T00:00:00+00:00">
+  <meta itemprop="dateModified" content="2025-04-11T00:00:00+00:00">
+  <meta itemprop="wordCount" content="162">
+  <meta itemprop="image" content="http://localhost:1313/images/share.png">
+  <meta itemprop="keywords" content="玩">
+<meta name="referrer" content="no-referrer-when-downgrade" />
+
+  <style>
+  :root {
+      --width: 720px;
+      --font-main: "Smiley Sans Oblique";
+      --font-secondary: "LXGW WenKai";
+      --font-scale: 1em;
+      --background-color: #fff;
+      --heading-color: #222;
+      --text-color: #444;
+      --link-color: #3273dc;
+      --visited-color:  #8b6fcb;
+      --code-background-color: #f2f2f2;
+      --code-color: #222;
+      --blockquote-color: #222;
+  }
+
+  @media (prefers-color-scheme: dark) {
+      :root {
+          --background-color: #01242e;
+          --heading-color: #eee;
+          --text-color: #ddd;
+          --link-color: #8cc2dd;
+          --visited-color:  #8b6fcb;
+          --code-background-color: #000;
+          --code-color: #ddd;
+          --blockquote-color: #ccc;
+      }
+  }
+
+  body {
+      font-family: var(--font-secondary);
+      font-size: var(--font-scale);
+      margin: auto;
+      padding: 20px;
+      max-width: var(--width);
+      text-align: left;
+      background-color: var(--background-color);
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      line-height: 1.5;
+      color: var(--text-color);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+      font-family: var(--font-main);
+      color: var(--heading-color);
+  }
+
+  a {
+      color: var(--link-color);
+      cursor: pointer;
+      text-decoration: none;
+  }
+
+  a:hover {
+      text-decoration: underline;
+  }
+
+  nav a {
+      margin-right: 8px;
+  }
+
+  strong, b {
+      color: var(--heading-color);
+  }
+
+  button {
+      margin: 0;
+      cursor: pointer;
+  }
+
+  time {
+   	font-family: monospace;
+    	font-style: normal;
+    	font-size: 15px;
+  }
+
+  main {
+      line-height: 1.6;
+  }
+
+  table {
+      width: 100%;
+  }
+
+  hr {
+      border: 0;
+      border-top: 1px dashed;
+  }
+
+  img {
+      max-width: 100%;
+  }
+
+  code {
+      font-family: "LXGW WenKai";
+      padding: 2px;
+      background-color: var(--code-background-color);
+      color: var(--code-color);
+      border-radius: 3px;
+  }
+
+  blockquote {
+      border-left: 1px solid #999;
+      color: var(--code-color);
+      padding-left: 20px;
+      font-style: italic;
+  }
+
+  footer {
+      padding: 25px 0;
+      text-align: center;
+  }
+
+  .title:hover {
+      text-decoration: none;
+  }
+
+  .title h1 {
+      font-size: 1.5em;
+  }
+
+  .inline {
+      width: auto !important;
+  }
+
+  .highlight, .code {
+      padding: 1px 15px;
+      background-color: var(--code-background-color);
+      color: var(--code-color);
+      border-radius: 3px;
+      margin-block-start: 1em;
+      margin-block-end: 1em;
+      overflow-x: auto;
+  }
+
+   
+  ul.blog-posts {
+      list-style-type: none;
+      padding: unset;
+  }
+
+  ul.blog-posts li {
+      display: flex;
+  }
+
+  ul.blog-posts li span {
+      flex: 0 0 130px;
+  }
+
+  ul.blog-posts li a:visited {
+      color: var(--visited-color);
+  }
+
+
+  body, .article-page {
+    font-family:"LXGW WenKai", sans-serif;
+    }
+
+</style>
+
+
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)'], ['$', '$']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+ 
+
+
+<link rel='stylesheet' href='https://chinese-fonts-cdn.deno.dev/packages/lxgwwenkai/dist/LXGWWenKai-Bold/result.css' /> 
+<link rel='stylesheet' href='https://chinese-fonts-cdn.deno.dev/packages/stdgt/dist/%E4%B8%8A%E5%9B%BE%E4%B8%9C%E8%A7%82%E4%BD%93-%E7%B2%97%E4%BD%93/result.css' /> 
+<link rel='stylesheet' href='https://chinese-fonts-cdn.deno.dev/packages/dyh/dist/SmileySans-Oblique/result.css' /> 
+
+</head>
+
+<body>
+  <header><a href="/" class="title">
+  <h2>ʕ•ᴥ•ʔ 橙红色时雨 Blog</h2>
+</a>
+<nav><a href="/">Home</a>
+
+<a href="/bear/">友链</a>
+
+
+<a href="/blog">Blog</a>
+
+</nav>
+</header>
+  <main>
+
+<h1>安卓搭建rclone同步</h1>
+<p>
+  <i>
+    <time datetime='2025-04-11'>
+      11 Apr, 2025
+    </time>
+  </i>
+</p>
+
+<content>
+  <p>主要目的是为了平替Foldersync，需要用到Termux和alist</p>
+<p>因为FolderSync的webdav协议只支持https，但是alist只支持http，设置https也挺麻烦的，所以就没有去弄。</p>
+<p>首先你需要安装一个Termux，然后你要配置一个Alist</p>
+<p>Termux换源之后，直接<code>pkg install alist</code>，安装alist，之后的内容就和电脑版差不多，可以参考着来。</p>
+<p>别名</p>
+<p>别名的设置，<code>alist server</code>如果感觉难记，那就写个别名</p>
+<p>方法是创建名称为 .bashrc 的文件，然后在文件里面添加</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#007020">alias</span> <span style="color:#bb60d5">a1</span><span style="color:#666">=</span><span style="color:#4070a0">&#39;alist server&#39;</span>
+</span></span></code></pre></div><p>其中a1就是别名，直接在命令行输入a1就可以运行<code>alist server</code></p>
+<p>使用<code>source .bashrc</code>来启用这个命令，source后面跟的是.bashrc的位置。</p>
+<p>可以用mt管理器来玩termux，会直接显示termux视角下的文件系统，相当于图像化管理了。</p>
+<h3 id="rclone">rclone</h3>
+<p>然后是rclone的配置，同样是<code>pkg install rclone</code>，安装rclone。</p>
+<p>然后是配置</p>
+<p>直接rclone config 进入配置，然后选择新建配置的对应字母。</p>
+<p>配置需要设置
+配置名称：自己设置，比如我设置成aaa
+url：http://127.0.0.1:5244/dav/baidu_123(dav后填写的是你自己想挂载的路径)
+用户名：alist中设置的
+密码：alist中设置的</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span>Option vendor.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>Name of the WebDAV site/service/software you are using.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>Choose a number from below, or <span style="color:#007020">type</span> in your own value.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>Press Enter to leave empty.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span> <span style="color:#40a070">1</span> / Fastmail Files
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>   <span style="color:#4070a0;font-weight:bold">\ </span><span style="color:#666">(</span>fastmail<span style="color:#666">)</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span> <span style="color:#40a070">2</span> / Nextcloud
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>   <span style="color:#4070a0;font-weight:bold">\ </span><span style="color:#666">(</span>nextcloud<span style="color:#666">)</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span> <span style="color:#40a070">3</span> / Owncloud
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>   <span style="color:#4070a0;font-weight:bold">\ </span><span style="color:#666">(</span>owncloud<span style="color:#666">)</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span> <span style="color:#40a070">4</span> / Sharepoint Online, authenticated by Microsoft account
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>   <span style="color:#4070a0;font-weight:bold">\ </span><span style="color:#666">(</span>sharepoint<span style="color:#666">)</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span> <span style="color:#40a070">5</span> / Sharepoint with NTLM authentication, usually self-hosted or on-premises
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>   <span style="color:#4070a0;font-weight:bold">\ </span><span style="color:#666">(</span>sharepoint-ntlm<span style="color:#666">)</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span> <span style="color:#40a070">6</span> / rclone WebDAV server to serve a remote over HTTP via the WebDAV protocol
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span>   <span style="color:#4070a0;font-weight:bold">\ </span><span style="color:#666">(</span>rclone<span style="color:#666">)</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span><span> <span style="color:#40a070">7</span> / Other site/service or software
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span><span>   <span style="color:#4070a0;font-weight:bold">\ </span><span style="color:#666">(</span>other<span style="color:#666">)</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span><span>vendor&gt; <span style="color:#40a070">6</span>
+</span></span></code></pre></div><p>别的高级设置 head什么的都可以不填直接空住，点回车（选择默认的选项）。</p>
+<p>常用命令</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>rclone ls aaa:/
+</span></span></code></pre></div><p>其中aaa选择你自己设置的名称，这个命令主要是用于列出文件夹下的所有文件（包括子文件夹），如果能列出来说明配置成功了。</p>
+<p>同步</p>
+<p>可以选择sync命令同步，这个是单向同步，bisync是双向同步但是我没搞懂那个。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>rclone sync aaa:/music/华语经典热歌榜200首 /media/
+</span></span></code></pre></div><p>注意这个同步主要是从第一个地址同步到第二个地址。</p>
+<p>在Termux中，地址是 storage/shared/你从文件夹打开的默认地址</p>
+<h3 id="bug">bug</h3>
+<ol>
+<li>如果发现<code>rclone ls </code>命令列出的东西不对，那先从网页版登录一下alist，注意用火狐，必应，或者谷歌浏览器，国内的夸克什么的可能登陆不了。</li>
+</ol>
+<p>登录alist之后，加载到对应挂载的地方然后点旁边的刷新按钮。
+如果依然解决不了，关闭alist后重启alist</p>
+<p>本文参考：</p>
+<p><a href="http://bytetoy.cn/tips/rclone_to_webdav.html">http://bytetoy.cn/tips/rclone_to_webdav.html</a></p>
+
+</content>
+<p>
+  
+  <a href="http://localhost:1313/blog/%E7%8E%A9/">#玩</a>
+  
+</p>
+
+  </main>
+  <footer>
+</footer>
+
+    
+</body>
+
+</html>

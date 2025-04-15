@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta http-equiv="X-Clacks-Overhead" content="GNU Terry Pratchett" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="shortcut icon" href="http://localhost:1313/images/favicon.png" />
+<title>测评手机上的电子书阅读软件 | ʕ•ᴥ•ʔ 橙红色时雨 Blog</title>
+<meta name="title" content="测评手机上的电子书阅读软件" />
+<meta name="description" content="开源阅读
+神中神，无论是读网文还是别的，排版都可以自定义的很好看，如果不会排版可以去参考一下微信读书的排版。
+而且开源阅读主攻的是网文，所以读网文啥的用这个挺好的。
+且打开txt速度飞快，操作比较流畅。
+对于云端同步书籍，做不到一键同步，得手动上传下载，有点麻烦，所以几乎不用。
+微信读书
+神中神2，微信读书的主要是读出版书比较方便，我大部分阅读的书都是导入到微信读书再去读。
+除了会员比较贵没有别的缺点了，但是会员贵也可以通过闲鱼上买会员，或者是通过免费无限卡兑换付费无限卡解决。
+优点是多平台同步比较方便，无论是墨水屏，手机，还是电脑都可以无缝衔接。
+墨水屏也有专门的墨水屏版本。
+Neat Reader
+终身版本，太nm贵了，150入的。
+但是用着用着感觉不值这个价格，一方面是它的排版很多不可调，明显不成熟，但是团队已经满足于此了，很久都没有大更新。
+还有是部分epub文件比较大，打开的也会比较慢，甚至完全打不开。
+在墨水屏上面没有做适配，导致墨水屏阅读的时候会跳页，也就是你明明点的是下一页，但是它给你跳回上一页。你要来回翻，很影响阅读体验。
+koodo Reader
+最近刚刚试用，发现打开txt比较慢，当然它的优点也是有的，就是便宜，而且私密性比较好，支持webdav，S3，还有google Drive等等网盘。
+阅读排版也可以自定义，综合下来效果还行。
+而且也是全平台的，支持linux，windows，网页和手机端。
+现在的价格是每年25r，不买就只支持webdav。
+koreader
+开源免费，打开速度快，本地阅读。
+专门为墨水屏做的，连漫画cbz都能阅读，简直神中神。
+当然缺点也是有的，比如说操作逻辑太生硬了，不像一般的应用。
+也可以配置云端等等，建议设置书籍状态文件保存到某个特定文件夹下面，不然你在哪个目录打开文件，它的配置文件就在哪创建，简直是到处拉屎。
+这个设置在：设置&gt;文档&gt;书籍元数据文件夹
+readest
+https://github.com/readest/readest
+相当于自带网盘给你用，数据全部存储在云端，目前没有收费的计划。
+自带500M空间，一半epub什么的够用，手机上略显卡顿，需要科学上网环境。
+librera FD
+仅推荐在F-Droid上下载的版本，google play版本有广告，且很多阅读器不支持google框架。
+打开本地书籍的速度很快，支持你想到的所有阅读器的功能，支持漫画，替换文本，自定义布局等等等等。
+一个完美的本地书籍阅读器，比koreader好，有这个几乎可以把koreader扔掉了。
+且用起来比moon reader顺手，至少我个人的评价是这样，moon reader付费困难就不评价了。" />
+<meta name="keywords" content="测评," />
+
+
+<meta property="og:url" content="http://localhost:1313/%E6%B5%8B%E8%AF%84%E6%89%8B%E6%9C%BA%E4%B8%8A%E7%9A%84%E7%94%B5%E5%AD%90%E4%B9%A6%E9%98%85%E8%AF%BB%E8%BD%AF%E4%BB%B6/">
+  <meta property="og:site_name" content="ʕ•ᴥ•ʔ 橙红色时雨 Blog">
+  <meta property="og:title" content="测评手机上的电子书阅读软件">
+  <meta property="og:description" content="开源阅读 神中神，无论是读网文还是别的，排版都可以自定义的很好看，如果不会排版可以去参考一下微信读书的排版。
+而且开源阅读主攻的是网文，所以读网文啥的用这个挺好的。
+且打开txt速度飞快，操作比较流畅。
+对于云端同步书籍，做不到一键同步，得手动上传下载，有点麻烦，所以几乎不用。
+微信读书 神中神2，微信读书的主要是读出版书比较方便，我大部分阅读的书都是导入到微信读书再去读。
+除了会员比较贵没有别的缺点了，但是会员贵也可以通过闲鱼上买会员，或者是通过免费无限卡兑换付费无限卡解决。
+优点是多平台同步比较方便，无论是墨水屏，手机，还是电脑都可以无缝衔接。
+墨水屏也有专门的墨水屏版本。
+Neat Reader 终身版本，太nm贵了，150入的。
+但是用着用着感觉不值这个价格，一方面是它的排版很多不可调，明显不成熟，但是团队已经满足于此了，很久都没有大更新。
+还有是部分epub文件比较大，打开的也会比较慢，甚至完全打不开。
+在墨水屏上面没有做适配，导致墨水屏阅读的时候会跳页，也就是你明明点的是下一页，但是它给你跳回上一页。你要来回翻，很影响阅读体验。
+koodo Reader 最近刚刚试用，发现打开txt比较慢，当然它的优点也是有的，就是便宜，而且私密性比较好，支持webdav，S3，还有google Drive等等网盘。
+阅读排版也可以自定义，综合下来效果还行。
+而且也是全平台的，支持linux，windows，网页和手机端。
+现在的价格是每年25r，不买就只支持webdav。
+koreader 开源免费，打开速度快，本地阅读。
+专门为墨水屏做的，连漫画cbz都能阅读，简直神中神。
+当然缺点也是有的，比如说操作逻辑太生硬了，不像一般的应用。
+也可以配置云端等等，建议设置书籍状态文件保存到某个特定文件夹下面，不然你在哪个目录打开文件，它的配置文件就在哪创建，简直是到处拉屎。
+这个设置在：设置&gt;文档&gt;书籍元数据文件夹
+readest https://github.com/readest/readest
+相当于自带网盘给你用，数据全部存储在云端，目前没有收费的计划。
+自带500M空间，一半epub什么的够用，手机上略显卡顿，需要科学上网环境。
+librera FD 仅推荐在F-Droid上下载的版本，google play版本有广告，且很多阅读器不支持google框架。
+打开本地书籍的速度很快，支持你想到的所有阅读器的功能，支持漫画，替换文本，自定义布局等等等等。
+一个完美的本地书籍阅读器，比koreader好，有这个几乎可以把koreader扔掉了。
+且用起来比moon reader顺手，至少我个人的评价是这样，moon reader付费困难就不评价了。">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="blog">
+    <meta property="article:published_time" content="2025-04-10T00:00:00+00:00">
+    <meta property="article:modified_time" content="2025-04-10T00:00:00+00:00">
+    <meta property="article:tag" content="测评">
+    <meta property="og:image" content="http://localhost:1313/images/share.png">
+
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="http://localhost:1313/images/share.png">
+  <meta name="twitter:title" content="测评手机上的电子书阅读软件">
+  <meta name="twitter:description" content="开源阅读 神中神，无论是读网文还是别的，排版都可以自定义的很好看，如果不会排版可以去参考一下微信读书的排版。
+而且开源阅读主攻的是网文，所以读网文啥的用这个挺好的。
+且打开txt速度飞快，操作比较流畅。
+对于云端同步书籍，做不到一键同步，得手动上传下载，有点麻烦，所以几乎不用。
+微信读书 神中神2，微信读书的主要是读出版书比较方便，我大部分阅读的书都是导入到微信读书再去读。
+除了会员比较贵没有别的缺点了，但是会员贵也可以通过闲鱼上买会员，或者是通过免费无限卡兑换付费无限卡解决。
+优点是多平台同步比较方便，无论是墨水屏，手机，还是电脑都可以无缝衔接。
+墨水屏也有专门的墨水屏版本。
+Neat Reader 终身版本，太nm贵了，150入的。
+但是用着用着感觉不值这个价格，一方面是它的排版很多不可调，明显不成熟，但是团队已经满足于此了，很久都没有大更新。
+还有是部分epub文件比较大，打开的也会比较慢，甚至完全打不开。
+在墨水屏上面没有做适配，导致墨水屏阅读的时候会跳页，也就是你明明点的是下一页，但是它给你跳回上一页。你要来回翻，很影响阅读体验。
+koodo Reader 最近刚刚试用，发现打开txt比较慢，当然它的优点也是有的，就是便宜，而且私密性比较好，支持webdav，S3，还有google Drive等等网盘。
+阅读排版也可以自定义，综合下来效果还行。
+而且也是全平台的，支持linux，windows，网页和手机端。
+现在的价格是每年25r，不买就只支持webdav。
+koreader 开源免费，打开速度快，本地阅读。
+专门为墨水屏做的，连漫画cbz都能阅读，简直神中神。
+当然缺点也是有的，比如说操作逻辑太生硬了，不像一般的应用。
+也可以配置云端等等，建议设置书籍状态文件保存到某个特定文件夹下面，不然你在哪个目录打开文件，它的配置文件就在哪创建，简直是到处拉屎。
+这个设置在：设置&gt;文档&gt;书籍元数据文件夹
+readest https://github.com/readest/readest
+相当于自带网盘给你用，数据全部存储在云端，目前没有收费的计划。
+自带500M空间，一半epub什么的够用，手机上略显卡顿，需要科学上网环境。
+librera FD 仅推荐在F-Droid上下载的版本，google play版本有广告，且很多阅读器不支持google框架。
+打开本地书籍的速度很快，支持你想到的所有阅读器的功能，支持漫画，替换文本，自定义布局等等等等。
+一个完美的本地书籍阅读器，比koreader好，有这个几乎可以把koreader扔掉了。
+且用起来比moon reader顺手，至少我个人的评价是这样，moon reader付费困难就不评价了。">
+
+
+
+
+  <meta itemprop="name" content="测评手机上的电子书阅读软件">
+  <meta itemprop="description" content="开源阅读 神中神，无论是读网文还是别的，排版都可以自定义的很好看，如果不会排版可以去参考一下微信读书的排版。
+而且开源阅读主攻的是网文，所以读网文啥的用这个挺好的。
+且打开txt速度飞快，操作比较流畅。
+对于云端同步书籍，做不到一键同步，得手动上传下载，有点麻烦，所以几乎不用。
+微信读书 神中神2，微信读书的主要是读出版书比较方便，我大部分阅读的书都是导入到微信读书再去读。
+除了会员比较贵没有别的缺点了，但是会员贵也可以通过闲鱼上买会员，或者是通过免费无限卡兑换付费无限卡解决。
+优点是多平台同步比较方便，无论是墨水屏，手机，还是电脑都可以无缝衔接。
+墨水屏也有专门的墨水屏版本。
+Neat Reader 终身版本，太nm贵了，150入的。
+但是用着用着感觉不值这个价格，一方面是它的排版很多不可调，明显不成熟，但是团队已经满足于此了，很久都没有大更新。
+还有是部分epub文件比较大，打开的也会比较慢，甚至完全打不开。
+在墨水屏上面没有做适配，导致墨水屏阅读的时候会跳页，也就是你明明点的是下一页，但是它给你跳回上一页。你要来回翻，很影响阅读体验。
+koodo Reader 最近刚刚试用，发现打开txt比较慢，当然它的优点也是有的，就是便宜，而且私密性比较好，支持webdav，S3，还有google Drive等等网盘。
+阅读排版也可以自定义，综合下来效果还行。
+而且也是全平台的，支持linux，windows，网页和手机端。
+现在的价格是每年25r，不买就只支持webdav。
+koreader 开源免费，打开速度快，本地阅读。
+专门为墨水屏做的，连漫画cbz都能阅读，简直神中神。
+当然缺点也是有的，比如说操作逻辑太生硬了，不像一般的应用。
+也可以配置云端等等，建议设置书籍状态文件保存到某个特定文件夹下面，不然你在哪个目录打开文件，它的配置文件就在哪创建，简直是到处拉屎。
+这个设置在：设置&gt;文档&gt;书籍元数据文件夹
+readest https://github.com/readest/readest
+相当于自带网盘给你用，数据全部存储在云端，目前没有收费的计划。
+自带500M空间，一半epub什么的够用，手机上略显卡顿，需要科学上网环境。
+librera FD 仅推荐在F-Droid上下载的版本，google play版本有广告，且很多阅读器不支持google框架。
+打开本地书籍的速度很快，支持你想到的所有阅读器的功能，支持漫画，替换文本，自定义布局等等等等。
+一个完美的本地书籍阅读器，比koreader好，有这个几乎可以把koreader扔掉了。
+且用起来比moon reader顺手，至少我个人的评价是这样，moon reader付费困难就不评价了。">
+  <meta itemprop="datePublished" content="2025-04-10T00:00:00+00:00">
+  <meta itemprop="dateModified" content="2025-04-10T00:00:00+00:00">
+  <meta itemprop="wordCount" content="42">
+  <meta itemprop="image" content="http://localhost:1313/images/share.png">
+  <meta itemprop="keywords" content="测评">
+<meta name="referrer" content="no-referrer-when-downgrade" />
+
+  <style>
+  :root {
+      --width: 720px;
+      --font-main: "Smiley Sans Oblique";
+      --font-secondary: "LXGW WenKai";
+      --font-scale: 1em;
+      --background-color: #fff;
+      --heading-color: #222;
+      --text-color: #444;
+      --link-color: #3273dc;
+      --visited-color:  #8b6fcb;
+      --code-background-color: #f2f2f2;
+      --code-color: #222;
+      --blockquote-color: #222;
+  }
+
+  @media (prefers-color-scheme: dark) {
+      :root {
+          --background-color: #01242e;
+          --heading-color: #eee;
+          --text-color: #ddd;
+          --link-color: #8cc2dd;
+          --visited-color:  #8b6fcb;
+          --code-background-color: #000;
+          --code-color: #ddd;
+          --blockquote-color: #ccc;
+      }
+  }
+
+  body {
+      font-family: var(--font-secondary);
+      font-size: var(--font-scale);
+      margin: auto;
+      padding: 20px;
+      max-width: var(--width);
+      text-align: left;
+      background-color: var(--background-color);
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      line-height: 1.5;
+      color: var(--text-color);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+      font-family: var(--font-main);
+      color: var(--heading-color);
+  }
+
+  a {
+      color: var(--link-color);
+      cursor: pointer;
+      text-decoration: none;
+  }
+
+  a:hover {
+      text-decoration: underline;
+  }
+
+  nav a {
+      margin-right: 8px;
+  }
+
+  strong, b {
+      color: var(--heading-color);
+  }
+
+  button {
+      margin: 0;
+      cursor: pointer;
+  }
+
+  time {
+   	font-family: monospace;
+    	font-style: normal;
+    	font-size: 15px;
+  }
+
+  main {
+      line-height: 1.6;
+  }
+
+  table {
+      width: 100%;
+  }
+
+  hr {
+      border: 0;
+      border-top: 1px dashed;
+  }
+
+  img {
+      max-width: 100%;
+  }
+
+  code {
+      font-family: "LXGW WenKai";
+      padding: 2px;
+      background-color: var(--code-background-color);
+      color: var(--code-color);
+      border-radius: 3px;
+  }
+
+  blockquote {
+      border-left: 1px solid #999;
+      color: var(--code-color);
+      padding-left: 20px;
+      font-style: italic;
+  }
+
+  footer {
+      padding: 25px 0;
+      text-align: center;
+  }
+
+  .title:hover {
+      text-decoration: none;
+  }
+
+  .title h1 {
+      font-size: 1.5em;
+  }
+
+  .inline {
+      width: auto !important;
+  }
+
+  .highlight, .code {
+      padding: 1px 15px;
+      background-color: var(--code-background-color);
+      color: var(--code-color);
+      border-radius: 3px;
+      margin-block-start: 1em;
+      margin-block-end: 1em;
+      overflow-x: auto;
+  }
+
+   
+  ul.blog-posts {
+      list-style-type: none;
+      padding: unset;
+  }
+
+  ul.blog-posts li {
+      display: flex;
+  }
+
+  ul.blog-posts li span {
+      flex: 0 0 130px;
+  }
+
+  ul.blog-posts li a:visited {
+      color: var(--visited-color);
+  }
+
+
+  body, .article-page {
+    font-family:"LXGW WenKai", sans-serif;
+    }
+
+</style>
+
+
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)'], ['$', '$']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+ 
+
+
+<link rel='stylesheet' href='https://chinese-fonts-cdn.deno.dev/packages/lxgwwenkai/dist/LXGWWenKai-Bold/result.css' /> 
+<link rel='stylesheet' href='https://chinese-fonts-cdn.deno.dev/packages/stdgt/dist/%E4%B8%8A%E5%9B%BE%E4%B8%9C%E8%A7%82%E4%BD%93-%E7%B2%97%E4%BD%93/result.css' /> 
+<link rel='stylesheet' href='https://chinese-fonts-cdn.deno.dev/packages/dyh/dist/SmileySans-Oblique/result.css' /> 
+
+</head>
+
+<body>
+  <header><a href="/" class="title">
+  <h2>ʕ•ᴥ•ʔ 橙红色时雨 Blog</h2>
+</a>
+<nav><a href="/">Home</a>
+
+<a href="/bear/">友链</a>
+
+
+<a href="/blog">Blog</a>
+
+</nav>
+</header>
+  <main>
+
+<h1>测评手机上的电子书阅读软件</h1>
+<p>
+  <i>
+    <time datetime='2025-04-10'>
+      10 Apr, 2025
+    </time>
+  </i>
+</p>
+
+<content>
+  <h1 id="开源阅读">开源阅读</h1>
+<p>神中神，无论是读网文还是别的，排版都可以自定义的很好看，如果不会排版可以去参考一下微信读书的排版。</p>
+<p>而且开源阅读主攻的是网文，所以读网文啥的用这个挺好的。</p>
+<p>且打开txt速度飞快，操作比较流畅。</p>
+<p>对于云端同步书籍，做不到一键同步，得手动上传下载，有点麻烦，所以几乎不用。</p>
+<h1 id="微信读书">微信读书</h1>
+<p>神中神2，微信读书的主要是读出版书比较方便，我大部分阅读的书都是导入到微信读书再去读。</p>
+<p>除了会员比较贵没有别的缺点了，但是会员贵也可以通过闲鱼上买会员，或者是通过免费无限卡兑换付费无限卡解决。</p>
+<p>优点是多平台同步比较方便，无论是墨水屏，手机，还是电脑都可以无缝衔接。</p>
+<p>墨水屏也有专门的墨水屏版本。</p>
+<h1 id="neat-reader">Neat Reader</h1>
+<p>终身版本，太nm贵了，150入的。</p>
+<p>但是用着用着感觉不值这个价格，一方面是它的排版很多不可调，明显不成熟，但是团队已经满足于此了，很久都没有大更新。</p>
+<p>还有是部分epub文件比较大，打开的也会比较慢，甚至完全打不开。</p>
+<p>在墨水屏上面没有做适配，导致墨水屏阅读的时候会跳页，也就是你明明点的是下一页，但是它给你跳回上一页。你要来回翻，很影响阅读体验。</p>
+<h1 id="koodo-reader">koodo Reader</h1>
+<p>最近刚刚试用，发现打开txt比较慢，当然它的优点也是有的，就是便宜，而且<strong>私密性比较好</strong>，支持webdav，S3，还有google Drive等等网盘。</p>
+<p>阅读排版也可以自定义，综合下来效果还行。</p>
+<p>而且也是全平台的，支持linux，windows，网页和手机端。</p>
+<p>现在的价格是每年25r，不买就只支持webdav。</p>
+<h1 id="koreader">koreader</h1>
+<p>开源免费，打开速度快，本地阅读。</p>
+<p>专门为墨水屏做的，连漫画cbz都能阅读，简直神中神。</p>
+<p>当然缺点也是有的，比如说操作逻辑太生硬了，不像一般的应用。</p>
+<p>也可以配置云端等等，建议设置书籍状态文件保存到某个特定文件夹下面，不然你在哪个目录打开文件，它的配置文件就在哪创建，简直是到处拉屎。</p>
+<p>这个设置在：设置&gt;文档&gt;书籍元数据文件夹</p>
+<h1 id="readest">readest</h1>
+<p><a href="https://github.com/readest/readest">https://github.com/readest/readest</a></p>
+<p>相当于自带网盘给你用，数据全部存储在云端，目前没有收费的计划。</p>
+<p>自带500M空间，一半epub什么的够用，手机上略显卡顿，需要科学上网环境。</p>
+<h1 id="librera-fd">librera FD</h1>
+<p>仅推荐在F-Droid上下载的版本，google play版本有广告，且很多阅读器不支持google框架。</p>
+<p>打开本地书籍的速度很快，支持你想到的所有阅读器的功能，支持漫画，替换文本，自定义布局等等等等。</p>
+<p>一个完美的本地书籍阅读器，比koreader好，有这个几乎可以把koreader扔掉了。</p>
+<p>且用起来比moon reader顺手，至少我个人的评价是这样，moon reader付费困难就不评价了。</p>
+
+</content>
+<p>
+  
+  <a href="http://localhost:1313/blog/%E6%B5%8B%E8%AF%84/">#测评</a>
+  
+</p>
+
+  </main>
+  <footer>
+</footer>
+
+    
+</body>
+
+</html>

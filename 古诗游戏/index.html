@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta http-equiv="X-Clacks-Overhead" content="GNU Terry Pratchett" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="shortcut icon" href="http://localhost:1313/images/favicon.png" />
+<title>古诗游戏 | ʕ•ᴥ•ʔ 橙红色时雨 Blog</title>
+<meta name="title" content="古诗游戏" />
+<meta name="description" content="将代码内容copy到txt文件中，然后更改txt为html，使用浏览器打开就能玩。
+点击运行
+  1&lt;!DOCTYPE html&gt;
+  2&lt;html lang=&#34;zh-CN&#34;&gt;
+  3&lt;head&gt;
+  4    &lt;meta charset=&#34;UTF-8&#34;&gt;
+  5    &lt;meta name=&#34;viewport&#34; content=&#34;width=device-width, initial-scale=1.0&#34;&gt;
+  6    &lt;title&gt;古诗词猜测游戏&lt;/title&gt;
+  7    &lt;style&gt;
+  8        .guess {
+  9            display: flex;
+ 10            margin-bottom: 10px;
+ 11        }
+ 12        .guess span {
+ 13            display: inline-block;
+ 14            width: 20px;
+ 15            height: 20px;
+ 16            text-align: center;
+ 17            line-height: 20px;
+ 18            margin-right: 5px;
+ 19            border: 1px solid #000;
+ 20        }
+ 21        .correct {
+ 22            background-color: green;
+ 23        }
+ 24        .present {
+ 25            background-color: yellow;
+ 26        }
+ 27        .absent {
+ 28            background-color: gray;
+ 29        }
+ 30        .tooltip {
+ 31            display: inline-block;
+ 32            padding: 10px 20px;
+ 33            background-color: #007bff;
+ 34            color: #fff;
+ 35            border-radius: 5px;
+ 36            font-size: 16px;
+ 37            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+ 38        }
+ 39    &lt;/style&gt;
+ 40&lt;/head&gt;
+ 41&lt;body&gt;
+ 42    &lt;h1&gt;古诗词猜测游戏&lt;/h1&gt;
+ 43    &lt;div class=&#34;tooltip&#34;&gt;
+ 44    &lt;p&gt;黄色：在谜底中，位置不对&lt;/p&gt;
+ 45    &lt;p&gt;绿色：在谜底中，位置对&lt;/p&gt;
+ 46    &lt;p&gt;灰色：不在谜底中&lt;/p&gt;
+ 47    &lt;/div&gt;
+ 48    &lt;p&gt;请输入14个字的古诗词：&lt;/p&gt;
+ 49    &lt;input type=&#34;text&#34; id=&#34;guessInput&#34;&gt;
+ 50    &lt;button onclick=&#34;submitGuess()&#34;&gt;确认&lt;/button&gt;
+ 51    &lt;p&gt;&lt;/p&gt;
+ 52    &lt;div id=&#34;guesses&#34;&gt;&lt;/div&gt;
+ 53    &lt;p&gt;&lt;/p&gt;
+ 54    &lt;p id=&#34;message&#34;&gt;&lt;/p&gt;
+ 55    &lt;script&gt;
+ 56        let poemData = [
+ 57            {&#34;poem&#34;: &#34;身无彩凤双飞翼心有灵犀一点通&#34;},
+ 58            {&#34;poem&#34;: &#34;心似白云常自在意如流水任东西&#34;},
+ 59            {&#34;poem&#34;: &#34;若无闲事挂心头便是人间好时节&#34;},
+ 60            {&#34;poem&#34;: &#34;飞流直下三千尺疑似银河落九天&#34;},
+ 61    {&#34;poem&#34;: &#34;春风又绿江南岸明月何时照我还&#34;},
+ 62    {&#34;poem&#34;: &#34;落霞与孤鹜齐飞秋水共长天一色&#34;},
+ 63    {&#34;poem&#34;: &#34;人生得意须尽欢莫使金樽空对月&#34;},
+ 64    {&#34;poem&#34;: &#34;山重水复疑无路柳暗花明又一村&#34;},
+ 65    {&#34;poem&#34;: &#34;天生我材必有用千金散尽还复来&#34;},
+ 66    {&#34;poem&#34;: &#34;无边落木萧萧下不尽长江滚滚来&#34;},
+ 67    {&#34;poem&#34;: &#34;醉卧沙场君莫笑古来征战几人回&#34;},
+ 68    {&#34;poem&#34;: &#34;不畏浮云遮望眼自缘身在最高层&#34;},
+ 69    {&#34;poem&#34;: &#34;纸上得来终觉浅绝知此事要躬行&#34;},
+ 70    {&#34;poem&#34;: &#34;不识庐山真面目只缘身在此山中&#34;},
+ 71    {&#34;poem&#34;: &#34;桃花潭水深千尺不及汪伦送我情&#34;},
+ 72    {&#34;poem&#34;: &#34;春风得意马蹄疾一日看尽长安花&#34;},
+ 73    {&#34;poem&#34;: &#34;两情若是久长时又岂在朝朝暮暮&#34;},
+ 74    {&#34;poem&#34;: &#34;劝君更尽一杯酒西出阳关无故人&#34;},
+ 75    {&#34;poem&#34;: &#34;莫愁前路无知己天下谁人不识君&#34;},
+ 76    {&#34;poem&#34;: &#34;忽如一夜春风来千树万树梨花开&#34;},
+ 77    {&#34;poem&#34;: &#34;黄沙百战穿金甲不破楼兰终不还&#34;},
+ 78    {&#34;poem&#34;: &#34;长风破浪会有时直挂云帆济沧海&#34;},
+ 79    {&#34;poem&#34;: &#34;天生丽质难自弃一朝选在君王侧&#34;},
+ 80    {&#34;poem&#34;: &#34;小楼一夜听春雨深巷明朝卖杏花&#34;},
+ 81    {&#34;poem&#34;: &#34;独在异乡为异客每逢佳节倍思亲&#34;},
+ 82    {&#34;poem&#34;: &#34;接天莲叶无穷碧映日荷花别样红&#34;},
+ 83    {&#34;poem&#34;: &#34;葡萄美酒夜光杯欲饮琵琶马上催&#34;},
+ 84    {&#34;poem&#34;: &#34;春江潮水连海平海上明月共潮生&#34;},
+ 85    {&#34;poem&#34;: &#34;抽刀断水水更流举杯消愁愁更愁&#34;},
+ 86    {&#34;poem&#34;: &#34;月落乌啼霜满天江枫渔火对愁眠&#34;},
+ 87    {&#34;poem&#34;: &#34;醉后不知天在水满船清梦压星河&#34;},
+ 88    {&#34;poem&#34;: &#34;衣带渐宽终不悔为伊消得人憔悴&#34;},
+ 89    {&#34;poem&#34;: &#34;日出江花红胜火春来江水绿如蓝&#34;},
+ 90    {&#34;poem&#34;: &#34;玲珑骰子安红豆入骨相思知不知&#34;},
+ 91    {&#34;poem&#34;: &#34;春风十里扬州路卷上珠帘总不如&#34;},
+ 92    {&#34;poem&#34;: &#34;曾经沧海难为水除却巫山不是云&#34;},
+ 93    {&#34;poem&#34;: &#34;同是天涯沦落人相逢何必曾相识&#34;},
+ 94    {&#34;poem&#34;: &#34;一骑红尘妃子笑无人知是荔枝来&#34;},
+ 95    {&#34;poem&#34;: &#34;问渠那得清如许为有源头活水来&#34;},
+ 96    {&#34;poem&#34;: &#34;无可奈何花落去似曾相识燕归来&#34;},
+ 97    {&#34;poem&#34;: &#34;沉舟侧畔千帆过病树前头万木春&#34;},
+ 98    {&#34;poem&#34;: &#34;天街小雨润如酥草色遥看近却无&#34;},
+ 99    {&#34;poem&#34;: &#34;乱花渐欲迷人眼浅草才能没马蹄&#34;},
+100    {&#34;poem&#34;: &#34;疏影横斜水清浅暗香浮动月黄昏&#34;},
+101    {&#34;poem&#34;: &#34;人生自是有情痴此恨不关风与月&#34;},
+102    {&#34;poem&#34;: &#34;东边日出西边雨道是无晴却有晴&#34;},
+103    {&#34;poem&#34;: &#34;身无彩凤双飞翼心有灵犀一点通&#34;},
+104    {&#34;poem&#34;: &#34;不畏浮云遮望眼自缘身在最高层&#34;},
+105    {&#34;poem&#34;: &#34;相见时难别亦难东风无力百花残&#34;},
+106    {&#34;poem&#34;: &#34;春蚕到死丝方尽蜡炬成灰泪始干&#34;},
+107    {&#34;poem&#34;: &#34;黑云压城城欲摧甲光向日金鳞开&#34;},
+108    {&#34;poem&#34;: &#34;庄生晓梦迷蝴蝶望帝春心托杜鹃&#34;},
+109    {&#34;poem&#34;: &#34;横看成岭侧成峰远近高低各不同&#34;},
+110    {&#34;poem&#34;: &#34;不识庐山真面目只缘身在此山中&#34;},
+111    {&#34;poem&#34;: &#34;两岸猿声啼不住轻舟已过万重山&#34;},
+112    {&#34;poem&#34;: &#34;莫笑农家腊酒浑丰年留客足鸡豚&#34;},
+113    {&#34;poem&#34;: &#34;山重水复疑无路柳暗花明又一村&#34;},
+114    {&#34;poem&#34;: &#34;黄梅时节家家雨青草池塘处处蛙&#34;},
+115    {&#34;poem&#34;: &#34;有约不来过夜半闲敲棋子落灯花&#34;},
+116    {&#34;poem&#34;: &#34;梅须逊雪三分白雪却输梅一段香&#34;},
+117    {&#34;poem&#34;: &#34;江山代有才人出各领风骚数百年&#34;},
+118    {&#34;poem&#34;: &#34;苟利国家生死以岂因祸福避趋之&#34;},
+119    {&#34;poem&#34;: &#34;我自横刀向天笑去留肝胆两昆仑&#34;},
+120    {&#34;poem&#34;: &#34;落红不是无情物化作春泥更护花&#34;},
+121    {&#34;poem&#34;: &#34;长风万里送秋雁对此可以酣高楼&#34;},
+122    {&#34;poem&#34;: &#34;抽刀断水水更流举杯消愁愁更愁&#34;},
+123    {&#34;poem&#34;: &#34;人生在世不称意明朝散发弄扁舟&#34;},
+124    {&#34;poem&#34;: &#34;大鹏一日同风起扶摇直上九万里&#34;},
+125    {&#34;poem&#34;: &#34;仰天大笑出门去我辈岂是蓬蒿人&#34;},
+126    {&#34;poem&#34;: &#34;天生我材必有用千金散尽还复来&#34;},
+127    {&#34;poem&#34;: &#34;黄河远上白云间一片孤城万仞山&#34;},
+128    {&#34;poem&#34;: &#34;羌笛何须怨杨柳春风不度玉门关&#34;},
+129    {&#34;poem&#34;: &#34;秦时明月汉时关万里长征人未还&#34;},
+130    {&#34;poem&#34;: &#34;但使龙城飞将在不教胡马度阴山&#34;},
+131    {&#34;poem&#34;: &#34;醉卧沙场君莫笑古来征战几人回&#34;},
+132    {&#34;poem&#34;: &#34;葡萄美酒夜光杯欲饮琵琶马上催&#34;},
+133    {&#34;poem&#34;: &#34;劝君更尽一杯酒西出阳关无故人&#34;},
+134    {&#34;poem&#34;: &#34;独在异乡为异客每逢佳节倍思亲&#34;},
+135    {&#34;poem&#34;: &#34;春城无处不飞花寒食东风御柳斜&#34;},
+136    {&#34;poem&#34;: &#34;日暮汉宫传蜡烛轻烟散入五侯家&#34;},
+137    {&#34;poem&#34;: &#34;两个黄鹂鸣翠柳一行白鹭上青天&#34;},
+138    {&#34;poem&#34;: &#34;窗含西岭千秋雪门泊东吴万里船&#34;},
+139    {&#34;poem&#34;: &#34;桃花潭水深千尺不及汪伦送我情&#34;},
+140    {&#34;poem&#34;: &#34;飞流直下三千尺疑是银河落九天&#34;},
+141    {&#34;poem&#34;: &#34;朝辞白帝彩云间千里江陵一日还&#34;},
+142    {&#34;poem&#34;: &#34;两岸猿声啼不住轻舟已过万重山&#34;},
+143    {&#34;poem&#34;: &#34;孤帆远影碧空尽唯见长江天际流&#34;},
+144    {&#34;poem&#34;: &#34;天门中断楚江开碧水东流至此回&#34;},
+145    {&#34;poem&#34;: &#34;两岸青山相对出孤帆一片日边来&#34;},
+146    {&#34;poem&#34;: &#34;遥望洞庭山水翠白银盘里一青螺&#34;},
+147    {&#34;poem&#34;: &#34;接天莲叶无穷碧映日荷花别样红&#34;},
+148    {&#34;poem&#34;: &#34;小荷才露尖尖角早有蜻蜓立上头&#34;},
+149    {&#34;poem&#34;: &#34;梅子金黄杏子肥麦花雪白菜花稀&#34;},
+150    {&#34;poem&#34;: &#34;日长篱落无人过惟有蜻蜓蛱蝶飞&#34;}
+151
+152
+153        ];
+154        let currentPoem = &#34;&#34;;
+155        let guessesLeft = 20;
+156
+157        function getRandomPoem() {
+158            let randomIndex = Math.floor(Math.random() * poemData.length);
+159            currentPoem = poemData[randomIndex].poem;
+160        }
+161
+162        function removePunctuation(text) {
+163            // 移除所有标点符号
+164            return text.replace(/[，。！？；：“”‘’《》【】、]/g, &#34;&#34;);
+165        }
+166
+167        function levenshteinDistance(a, b) {
+168            if (a.length === 0) return b.length;
+169            if (b.length === 0) return a.length;
+170
+171            let matrix = [];
+172            for (let i = 0; i &lt;= b.length; i&#43;&#43;) {
+173                matrix[i] = [i];
+174            }
+175            for (let j = 0; j &lt;= a.length; j&#43;&#43;) {
+176                matrix[0][j] = j;
+177            }
+178
+179            for (let i = 1; i &lt;= b.length; i&#43;&#43;) {
+180                for (let j = 1; j &lt;= a.length; j&#43;&#43;) {
+181                    if (b.charAt(i - 1) === a.charAt(j - 1)) {
+182                        matrix[i][j] = matrix[i - 1][j - 1];
+183                    } else {
+184                        matrix[i][j] = Math.min(
+185                            matrix[i - 1][j - 1] &#43; 1,
+186                            matrix[i][j - 1] &#43; 1,
+187                            matrix[i - 1][j] &#43; 1
+188                        );
+189                    }
+190                }
+191            }
+192
+193            return matrix[b.length][a.length];
+194        }
+195
+196        function findClosestPoem(guess) {
+197            let closestPoem = &#34;&#34;;
+198            let minDistance = Infinity;
+199
+200            for (let poem of poemData) {
+201                let distance = levenshteinDistance(guess, poem.poem);
+202                if (distance &lt; minDistance) {
+203                    minDistance = distance;
+204                    closestPoem = poem.poem;
+205                }
+206            }
+207
+208            return closestPoem;
+209        }
+210
+211        function submitGuess() {
+212            if (guessesLeft &lt;= 0) {
+213                document.getElementById(&#34;message&#34;).innerText = &#34;猜测次数已用完，更换谜底。&#34;;
+214                getRandomPoem();
+215                guessesLeft = 20;
+216                document.getElementById(&#34;guesses&#34;).innerHTML = &#34;&#34;;
+217                return;
+218            }
+219
+220            let guess = document.getElementById(&#34;guessInput&#34;).value;
+221            // 移除标点符号
+222            guess = removePunctuation(guess);
+223            // 截取前14个字
+224            guess = guess.substring(0, 14);
+225
+226            if (guess.length &lt; 14) {
+227                alert(&#34;请输入至少14个有效汉字！&#34;);
+228                return;
+229            }
+230
+231            // 检查用户输入是否在词库中
+232            let isInLibrary = poemData.some(poem =&gt; poem.poem === guess);
+233            if (!isInLibrary) {
+234                let closestPoem = findClosestPoem(guess);
+235                document.getElementById(&#34;message&#34;).innerText = `您输入的古诗词不在词库中，最相近的词句是：${closestPoem}`;
+236                return;
+237            }
+238
+239            let guessDisplay = document.createElement(&#34;div&#34;);
+240            guessDisplay.className = &#34;guess&#34;;
+241            for (let i = 0; i &lt; 14; i&#43;&#43;) {
+242                let char = guess[i];
+243                let span = document.createElement(&#34;span&#34;);
+244                span.innerText = char;
+245                if (char === currentPoem[i]) {
+246                    span.className = &#34;correct&#34;;
+247                } else if (currentPoem.includes(char)) {
+248                    span.className = &#34;present&#34;;
+249                } else {
+250                    span.className = &#34;absent&#34;;
+251                }
+252                guessDisplay.appendChild(span);
+253            }
+254            document.getElementById(&#34;guesses&#34;).appendChild(guessDisplay);
+255
+256            if (guess === currentPoem) {
+257                document.getElementById(&#34;message&#34;).innerText = &#34;恭喜你，猜对了！&#34;;
+258                return;
+259            }
+260
+261            guessesLeft--;
+262            document.getElementById(&#34;message&#34;).innerText = `剩余猜测次数：${guessesLeft}`;
+263            document.getElementById(&#34;guessInput&#34;).value = &#34;&#34;;
+264        }
+265
+266        window.onload = function() {
+267            getRandomPoem();
+268        };
+269    &lt;/script&gt;
+270&lt;/body&gt;
+271&lt;/html&gt;
+" />
+<meta name="keywords" content="玩," />
+
+
+<meta property="og:url" content="http://localhost:1313/%E5%8F%A4%E8%AF%97%E6%B8%B8%E6%88%8F/">
+  <meta property="og:site_name" content="ʕ•ᴥ•ʔ 橙红色时雨 Blog">
+  <meta property="og:title" content="古诗游戏">
+  <meta property="og:description" content="将代码内容copy到txt文件中，然后更改txt为html，使用浏览器打开就能玩。
+点击运行
+1&lt;!DOCTYPE html&gt; 2&lt;html lang=&#34;zh-CN&#34;&gt; 3&lt;head&gt; 4 &lt;meta charset=&#34;UTF-8&#34;&gt; 5 &lt;meta name=&#34;viewport&#34; content=&#34;width=device-width, initial-scale=1.0&#34;&gt; 6 &lt;title&gt;古诗词猜测游戏&lt;/title&gt; 7 &lt;style&gt; 8 .guess { 9 display: flex; 10 margin-bottom: 10px; 11 } 12 .guess span { 13 display: inline-block; 14 width: 20px; 15 height: 20px; 16 text-align: center; 17 line-height: 20px; 18 margin-right: 5px; 19 border: 1px solid #000; 20 } 21 .correct { 22 background-color: green; 23 } 24 .present { 25 background-color: yellow; 26 } 27 .absent { 28 background-color: gray; 29 } 30 .tooltip { 31 display: inline-block; 32 padding: 10px 20px; 33 background-color: #007bff; 34 color: #fff; 35 border-radius: 5px; 36 font-size: 16px; 37 box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); 38 } 39 &lt;/style&gt; 40&lt;/head&gt; 41&lt;body&gt; 42 &lt;h1&gt;古诗词猜测游戏&lt;/h1&gt; 43 &lt;div class=&#34;tooltip&#34;&gt; 44 &lt;p&gt;黄色：在谜底中，位置不对&lt;/p&gt; 45 &lt;p&gt;绿色：在谜底中，位置对&lt;/p&gt; 46 &lt;p&gt;灰色：不在谜底中&lt;/p&gt; 47 &lt;/div&gt; 48 &lt;p&gt;请输入14个字的古诗词：&lt;/p&gt; 49 &lt;input type=&#34;text&#34; id=&#34;guessInput&#34;&gt; 50 &lt;button onclick=&#34;submitGuess()&#34;&gt;确认&lt;/button&gt; 51 &lt;p&gt;&lt;/p&gt; 52 &lt;div id=&#34;guesses&#34;&gt;&lt;/div&gt; 53 &lt;p&gt;&lt;/p&gt; 54 &lt;p id=&#34;message&#34;&gt;&lt;/p&gt; 55 &lt;script&gt; 56 let poemData = [ 57 {&#34;poem&#34;: &#34;身无彩凤双飞翼心有灵犀一点通&#34;}, 58 {&#34;poem&#34;: &#34;心似白云常自在意如流水任东西&#34;}, 59 {&#34;poem&#34;: &#34;若无闲事挂心头便是人间好时节&#34;}, 60 {&#34;poem&#34;: &#34;飞流直下三千尺疑似银河落九天&#34;}, 61 {&#34;poem&#34;: &#34;春风又绿江南岸明月何时照我还&#34;}, 62 {&#34;poem&#34;: &#34;落霞与孤鹜齐飞秋水共长天一色&#34;}, 63 {&#34;poem&#34;: &#34;人生得意须尽欢莫使金樽空对月&#34;}, 64 {&#34;poem&#34;: &#34;山重水复疑无路柳暗花明又一村&#34;}, 65 {&#34;poem&#34;: &#34;天生我材必有用千金散尽还复来&#34;}, 66 {&#34;poem&#34;: &#34;无边落木萧萧下不尽长江滚滚来&#34;}, 67 {&#34;poem&#34;: &#34;醉卧沙场君莫笑古来征战几人回&#34;}, 68 {&#34;poem&#34;: &#34;不畏浮云遮望眼自缘身在最高层&#34;}, 69 {&#34;poem&#34;: &#34;纸上得来终觉浅绝知此事要躬行&#34;}, 70 {&#34;poem&#34;: &#34;不识庐山真面目只缘身在此山中&#34;}, 71 {&#34;poem&#34;: &#34;桃花潭水深千尺不及汪伦送我情&#34;}, 72 {&#34;poem&#34;: &#34;春风得意马蹄疾一日看尽长安花&#34;}, 73 {&#34;poem&#34;: &#34;两情若是久长时又岂在朝朝暮暮&#34;}, 74 {&#34;poem&#34;: &#34;劝君更尽一杯酒西出阳关无故人&#34;}, 75 {&#34;poem&#34;: &#34;莫愁前路无知己天下谁人不识君&#34;}, 76 {&#34;poem&#34;: &#34;忽如一夜春风来千树万树梨花开&#34;}, 77 {&#34;poem&#34;: &#34;黄沙百战穿金甲不破楼兰终不还&#34;}, 78 {&#34;poem&#34;: &#34;长风破浪会有时直挂云帆济沧海&#34;}, 79 {&#34;poem&#34;: &#34;天生丽质难自弃一朝选在君王侧&#34;}, 80 {&#34;poem&#34;: &#34;小楼一夜听春雨深巷明朝卖杏花&#34;}, 81 {&#34;poem&#34;: &#34;独在异乡为异客每逢佳节倍思亲&#34;}, 82 {&#34;poem&#34;: &#34;接天莲叶无穷碧映日荷花别样红&#34;}, 83 {&#34;poem&#34;: &#34;葡萄美酒夜光杯欲饮琵琶马上催&#34;}, 84 {&#34;poem&#34;: &#34;春江潮水连海平海上明月共潮生&#34;}, 85 {&#34;poem&#34;: &#34;抽刀断水水更流举杯消愁愁更愁&#34;}, 86 {&#34;poem&#34;: &#34;月落乌啼霜满天江枫渔火对愁眠&#34;}, 87 {&#34;poem&#34;: &#34;醉后不知天在水满船清梦压星河&#34;}, 88 {&#34;poem&#34;: &#34;衣带渐宽终不悔为伊消得人憔悴&#34;}, 89 {&#34;poem&#34;: &#34;日出江花红胜火春来江水绿如蓝&#34;}, 90 {&#34;poem&#34;: &#34;玲珑骰子安红豆入骨相思知不知&#34;}, 91 {&#34;poem&#34;: &#34;春风十里扬州路卷上珠帘总不如&#34;}, 92 {&#34;poem&#34;: &#34;曾经沧海难为水除却巫山不是云&#34;}, 93 {&#34;poem&#34;: &#34;同是天涯沦落人相逢何必曾相识&#34;}, 94 {&#34;poem&#34;: &#34;一骑红尘妃子笑无人知是荔枝来&#34;}, 95 {&#34;poem&#34;: &#34;问渠那得清如许为有源头活水来&#34;}, 96 {&#34;poem&#34;: &#34;无可奈何花落去似曾相识燕归来&#34;}, 97 {&#34;poem&#34;: &#34;沉舟侧畔千帆过病树前头万木春&#34;}, 98 {&#34;poem&#34;: &#34;天街小雨润如酥草色遥看近却无&#34;}, 99 {&#34;poem&#34;: &#34;乱花渐欲迷人眼浅草才能没马蹄&#34;}, 100 {&#34;poem&#34;: &#34;疏影横斜水清浅暗香浮动月黄昏&#34;}, 101 {&#34;poem&#34;: &#34;人生自是有情痴此恨不关风与月&#34;}, 102 {&#34;poem&#34;: &#34;东边日出西边雨道是无晴却有晴&#34;}, 103 {&#34;poem&#34;: &#34;身无彩凤双飞翼心有灵犀一点通&#34;}, 104 {&#34;poem&#34;: &#34;不畏浮云遮望眼自缘身在最高层&#34;}, 105 {&#34;poem&#34;: &#34;相见时难别亦难东风无力百花残&#34;}, 106 {&#34;poem&#34;: &#34;春蚕到死丝方尽蜡炬成灰泪始干&#34;}, 107 {&#34;poem&#34;: &#34;黑云压城城欲摧甲光向日金鳞开&#34;}, 108 {&#34;poem&#34;: &#34;庄生晓梦迷蝴蝶望帝春心托杜鹃&#34;}, 109 {&#34;poem&#34;: &#34;横看成岭侧成峰远近高低各不同&#34;}, 110 {&#34;poem&#34;: &#34;不识庐山真面目只缘身在此山中&#34;}, 111 {&#34;poem&#34;: &#34;两岸猿声啼不住轻舟已过万重山&#34;}, 112 {&#34;poem&#34;: &#34;莫笑农家腊酒浑丰年留客足鸡豚&#34;}, 113 {&#34;poem&#34;: &#34;山重水复疑无路柳暗花明又一村&#34;}, 114 {&#34;poem&#34;: &#34;黄梅时节家家雨青草池塘处处蛙&#34;}, 115 {&#34;poem&#34;: &#34;有约不来过夜半闲敲棋子落灯花&#34;}, 116 {&#34;poem&#34;: &#34;梅须逊雪三分白雪却输梅一段香&#34;}, 117 {&#34;poem&#34;: &#34;江山代有才人出各领风骚数百年&#34;}, 118 {&#34;poem&#34;: &#34;苟利国家生死以岂因祸福避趋之&#34;}, 119 {&#34;poem&#34;: &#34;我自横刀向天笑去留肝胆两昆仑&#34;}, 120 {&#34;poem&#34;: &#34;落红不是无情物化作春泥更护花&#34;}, 121 {&#34;poem&#34;: &#34;长风万里送秋雁对此可以酣高楼&#34;}, 122 {&#34;poem&#34;: &#34;抽刀断水水更流举杯消愁愁更愁&#34;}, 123 {&#34;poem&#34;: &#34;人生在世不称意明朝散发弄扁舟&#34;}, 124 {&#34;poem&#34;: &#34;大鹏一日同风起扶摇直上九万里&#34;}, 125 {&#34;poem&#34;: &#34;仰天大笑出门去我辈岂是蓬蒿人&#34;}, 126 {&#34;poem&#34;: &#34;天生我材必有用千金散尽还复来&#34;}, 127 {&#34;poem&#34;: &#34;黄河远上白云间一片孤城万仞山&#34;}, 128 {&#34;poem&#34;: &#34;羌笛何须怨杨柳春风不度玉门关&#34;}, 129 {&#34;poem&#34;: &#34;秦时明月汉时关万里长征人未还&#34;}, 130 {&#34;poem&#34;: &#34;但使龙城飞将在不教胡马度阴山&#34;}, 131 {&#34;poem&#34;: &#34;醉卧沙场君莫笑古来征战几人回&#34;}, 132 {&#34;poem&#34;: &#34;葡萄美酒夜光杯欲饮琵琶马上催&#34;}, 133 {&#34;poem&#34;: &#34;劝君更尽一杯酒西出阳关无故人&#34;}, 134 {&#34;poem&#34;: &#34;独在异乡为异客每逢佳节倍思亲&#34;}, 135 {&#34;poem&#34;: &#34;春城无处不飞花寒食东风御柳斜&#34;}, 136 {&#34;poem&#34;: &#34;日暮汉宫传蜡烛轻烟散入五侯家&#34;}, 137 {&#34;poem&#34;: &#34;两个黄鹂鸣翠柳一行白鹭上青天&#34;}, 138 {&#34;poem&#34;: &#34;窗含西岭千秋雪门泊东吴万里船&#34;}, 139 {&#34;poem&#34;: &#34;桃花潭水深千尺不及汪伦送我情&#34;}, 140 {&#34;poem&#34;: &#34;飞流直下三千尺疑是银河落九天&#34;}, 141 {&#34;poem&#34;: &#34;朝辞白帝彩云间千里江陵一日还&#34;}, 142 {&#34;poem&#34;: &#34;两岸猿声啼不住轻舟已过万重山&#34;}, 143 {&#34;poem&#34;: &#34;孤帆远影碧空尽唯见长江天际流&#34;}, 144 {&#34;poem&#34;: &#34;天门中断楚江开碧水东流至此回&#34;}, 145 {&#34;poem&#34;: &#34;两岸青山相对出孤帆一片日边来&#34;}, 146 {&#34;poem&#34;: &#34;遥望洞庭山水翠白银盘里一青螺&#34;}, 147 {&#34;poem&#34;: &#34;接天莲叶无穷碧映日荷花别样红&#34;}, 148 {&#34;poem&#34;: &#34;小荷才露尖尖角早有蜻蜓立上头&#34;}, 149 {&#34;poem&#34;: &#34;梅子金黄杏子肥麦花雪白菜花稀&#34;}, 150 {&#34;poem&#34;: &#34;日长篱落无人过惟有蜻蜓蛱蝶飞&#34;} 151 152 153 ]; 154 let currentPoem = &#34;&#34;; 155 let guessesLeft = 20; 156 157 function getRandomPoem() { 158 let randomIndex = Math.floor(Math.random() * poemData.length); 159 currentPoem = poemData[randomIndex].poem; 160 } 161 162 function removePunctuation(text) { 163 // 移除所有标点符号 164 return text.replace(/[，。！？；：“”‘’《》【】、]/g, &#34;&#34;); 165 } 166 167 function levenshteinDistance(a, b) { 168 if (a.length === 0) return b.length; 169 if (b.length === 0) return a.length; 170 171 let matrix = []; 172 for (let i = 0; i &lt;= b.length; i&#43;&#43;) { 173 matrix[i] = [i]; 174 } 175 for (let j = 0; j &lt;= a.length; j&#43;&#43;) { 176 matrix[0][j] = j; 177 } 178 179 for (let i = 1; i &lt;= b.length; i&#43;&#43;) { 180 for (let j = 1; j &lt;= a.length; j&#43;&#43;) { 181 if (b.charAt(i - 1) === a.charAt(j - 1)) { 182 matrix[i][j] = matrix[i - 1][j - 1]; 183 } else { 184 matrix[i][j] = Math.min( 185 matrix[i - 1][j - 1] &#43; 1, 186 matrix[i][j - 1] &#43; 1, 187 matrix[i - 1][j] &#43; 1 188 ); 189 } 190 } 191 } 192 193 return matrix[b.length][a.length]; 194 } 195 196 function findClosestPoem(guess) { 197 let closestPoem = &#34;&#34;; 198 let minDistance = Infinity; 199 200 for (let poem of poemData) { 201 let distance = levenshteinDistance(guess, poem.poem); 202 if (distance &lt; minDistance) { 203 minDistance = distance; 204 closestPoem = poem.poem; 205 } 206 } 207 208 return closestPoem; 209 } 210 211 function submitGuess() { 212 if (guessesLeft &lt;= 0) { 213 document.getElementById(&#34;message&#34;).innerText = &#34;猜测次数已用完，更换谜底。&#34;; 214 getRandomPoem(); 215 guessesLeft = 20; 216 document.getElementById(&#34;guesses&#34;).innerHTML = &#34;&#34;; 217 return; 218 } 219 220 let guess = document.getElementById(&#34;guessInput&#34;).value; 221 // 移除标点符号 222 guess = removePunctuation(guess); 223 // 截取前14个字 224 guess = guess.substring(0, 14); 225 226 if (guess.length &lt; 14) { 227 alert(&#34;请输入至少14个有效汉字！&#34;); 228 return; 229 } 230 231 // 检查用户输入是否在词库中 232 let isInLibrary = poemData.some(poem =&gt; poem.poem === guess); 233 if (!isInLibrary) { 234 let closestPoem = findClosestPoem(guess); 235 document.getElementById(&#34;message&#34;).innerText = `您输入的古诗词不在词库中，最相近的词句是：${closestPoem}`; 236 return; 237 } 238 239 let guessDisplay = document.createElement(&#34;div&#34;); 240 guessDisplay.className = &#34;guess&#34;; 241 for (let i = 0; i &lt; 14; i&#43;&#43;) { 242 let char = guess[i]; 243 let span = document.createElement(&#34;span&#34;); 244 span.innerText = char; 245 if (char === currentPoem[i]) { 246 span.className = &#34;correct&#34;; 247 } else if (currentPoem.includes(char)) { 248 span.className = &#34;present&#34;; 249 } else { 250 span.className = &#34;absent&#34;; 251 } 252 guessDisplay.appendChild(span); 253 } 254 document.getElementById(&#34;guesses&#34;).appendChild(guessDisplay); 255 256 if (guess === currentPoem) { 257 document.getElementById(&#34;message&#34;).innerText = &#34;恭喜你，猜对了！&#34;; 258 return; 259 } 260 261 guessesLeft--; 262 document.getElementById(&#34;message&#34;).innerText = `剩余猜测次数：${guessesLeft}`; 263 document.getElementById(&#34;guessInput&#34;).value = &#34;&#34;; 264 } 265 266 window.onload = function() { 267 getRandomPoem(); 268 }; 269 &lt;/script&gt; 270&lt;/body&gt; 271&lt;/html&gt;">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="blog">
+    <meta property="article:published_time" content="2025-04-10T00:00:00+00:00">
+    <meta property="article:modified_time" content="2025-04-10T00:00:00+00:00">
+    <meta property="article:tag" content="玩">
+    <meta property="og:image" content="http://localhost:1313/images/share.png">
+
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="http://localhost:1313/images/share.png">
+  <meta name="twitter:title" content="古诗游戏">
+  <meta name="twitter:description" content="将代码内容copy到txt文件中，然后更改txt为html，使用浏览器打开就能玩。
+点击运行
+1&lt;!DOCTYPE html&gt; 2&lt;html lang=&#34;zh-CN&#34;&gt; 3&lt;head&gt; 4 &lt;meta charset=&#34;UTF-8&#34;&gt; 5 &lt;meta name=&#34;viewport&#34; content=&#34;width=device-width, initial-scale=1.0&#34;&gt; 6 &lt;title&gt;古诗词猜测游戏&lt;/title&gt; 7 &lt;style&gt; 8 .guess { 9 display: flex; 10 margin-bottom: 10px; 11 } 12 .guess span { 13 display: inline-block; 14 width: 20px; 15 height: 20px; 16 text-align: center; 17 line-height: 20px; 18 margin-right: 5px; 19 border: 1px solid #000; 20 } 21 .correct { 22 background-color: green; 23 } 24 .present { 25 background-color: yellow; 26 } 27 .absent { 28 background-color: gray; 29 } 30 .tooltip { 31 display: inline-block; 32 padding: 10px 20px; 33 background-color: #007bff; 34 color: #fff; 35 border-radius: 5px; 36 font-size: 16px; 37 box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); 38 } 39 &lt;/style&gt; 40&lt;/head&gt; 41&lt;body&gt; 42 &lt;h1&gt;古诗词猜测游戏&lt;/h1&gt; 43 &lt;div class=&#34;tooltip&#34;&gt; 44 &lt;p&gt;黄色：在谜底中，位置不对&lt;/p&gt; 45 &lt;p&gt;绿色：在谜底中，位置对&lt;/p&gt; 46 &lt;p&gt;灰色：不在谜底中&lt;/p&gt; 47 &lt;/div&gt; 48 &lt;p&gt;请输入14个字的古诗词：&lt;/p&gt; 49 &lt;input type=&#34;text&#34; id=&#34;guessInput&#34;&gt; 50 &lt;button onclick=&#34;submitGuess()&#34;&gt;确认&lt;/button&gt; 51 &lt;p&gt;&lt;/p&gt; 52 &lt;div id=&#34;guesses&#34;&gt;&lt;/div&gt; 53 &lt;p&gt;&lt;/p&gt; 54 &lt;p id=&#34;message&#34;&gt;&lt;/p&gt; 55 &lt;script&gt; 56 let poemData = [ 57 {&#34;poem&#34;: &#34;身无彩凤双飞翼心有灵犀一点通&#34;}, 58 {&#34;poem&#34;: &#34;心似白云常自在意如流水任东西&#34;}, 59 {&#34;poem&#34;: &#34;若无闲事挂心头便是人间好时节&#34;}, 60 {&#34;poem&#34;: &#34;飞流直下三千尺疑似银河落九天&#34;}, 61 {&#34;poem&#34;: &#34;春风又绿江南岸明月何时照我还&#34;}, 62 {&#34;poem&#34;: &#34;落霞与孤鹜齐飞秋水共长天一色&#34;}, 63 {&#34;poem&#34;: &#34;人生得意须尽欢莫使金樽空对月&#34;}, 64 {&#34;poem&#34;: &#34;山重水复疑无路柳暗花明又一村&#34;}, 65 {&#34;poem&#34;: &#34;天生我材必有用千金散尽还复来&#34;}, 66 {&#34;poem&#34;: &#34;无边落木萧萧下不尽长江滚滚来&#34;}, 67 {&#34;poem&#34;: &#34;醉卧沙场君莫笑古来征战几人回&#34;}, 68 {&#34;poem&#34;: &#34;不畏浮云遮望眼自缘身在最高层&#34;}, 69 {&#34;poem&#34;: &#34;纸上得来终觉浅绝知此事要躬行&#34;}, 70 {&#34;poem&#34;: &#34;不识庐山真面目只缘身在此山中&#34;}, 71 {&#34;poem&#34;: &#34;桃花潭水深千尺不及汪伦送我情&#34;}, 72 {&#34;poem&#34;: &#34;春风得意马蹄疾一日看尽长安花&#34;}, 73 {&#34;poem&#34;: &#34;两情若是久长时又岂在朝朝暮暮&#34;}, 74 {&#34;poem&#34;: &#34;劝君更尽一杯酒西出阳关无故人&#34;}, 75 {&#34;poem&#34;: &#34;莫愁前路无知己天下谁人不识君&#34;}, 76 {&#34;poem&#34;: &#34;忽如一夜春风来千树万树梨花开&#34;}, 77 {&#34;poem&#34;: &#34;黄沙百战穿金甲不破楼兰终不还&#34;}, 78 {&#34;poem&#34;: &#34;长风破浪会有时直挂云帆济沧海&#34;}, 79 {&#34;poem&#34;: &#34;天生丽质难自弃一朝选在君王侧&#34;}, 80 {&#34;poem&#34;: &#34;小楼一夜听春雨深巷明朝卖杏花&#34;}, 81 {&#34;poem&#34;: &#34;独在异乡为异客每逢佳节倍思亲&#34;}, 82 {&#34;poem&#34;: &#34;接天莲叶无穷碧映日荷花别样红&#34;}, 83 {&#34;poem&#34;: &#34;葡萄美酒夜光杯欲饮琵琶马上催&#34;}, 84 {&#34;poem&#34;: &#34;春江潮水连海平海上明月共潮生&#34;}, 85 {&#34;poem&#34;: &#34;抽刀断水水更流举杯消愁愁更愁&#34;}, 86 {&#34;poem&#34;: &#34;月落乌啼霜满天江枫渔火对愁眠&#34;}, 87 {&#34;poem&#34;: &#34;醉后不知天在水满船清梦压星河&#34;}, 88 {&#34;poem&#34;: &#34;衣带渐宽终不悔为伊消得人憔悴&#34;}, 89 {&#34;poem&#34;: &#34;日出江花红胜火春来江水绿如蓝&#34;}, 90 {&#34;poem&#34;: &#34;玲珑骰子安红豆入骨相思知不知&#34;}, 91 {&#34;poem&#34;: &#34;春风十里扬州路卷上珠帘总不如&#34;}, 92 {&#34;poem&#34;: &#34;曾经沧海难为水除却巫山不是云&#34;}, 93 {&#34;poem&#34;: &#34;同是天涯沦落人相逢何必曾相识&#34;}, 94 {&#34;poem&#34;: &#34;一骑红尘妃子笑无人知是荔枝来&#34;}, 95 {&#34;poem&#34;: &#34;问渠那得清如许为有源头活水来&#34;}, 96 {&#34;poem&#34;: &#34;无可奈何花落去似曾相识燕归来&#34;}, 97 {&#34;poem&#34;: &#34;沉舟侧畔千帆过病树前头万木春&#34;}, 98 {&#34;poem&#34;: &#34;天街小雨润如酥草色遥看近却无&#34;}, 99 {&#34;poem&#34;: &#34;乱花渐欲迷人眼浅草才能没马蹄&#34;}, 100 {&#34;poem&#34;: &#34;疏影横斜水清浅暗香浮动月黄昏&#34;}, 101 {&#34;poem&#34;: &#34;人生自是有情痴此恨不关风与月&#34;}, 102 {&#34;poem&#34;: &#34;东边日出西边雨道是无晴却有晴&#34;}, 103 {&#34;poem&#34;: &#34;身无彩凤双飞翼心有灵犀一点通&#34;}, 104 {&#34;poem&#34;: &#34;不畏浮云遮望眼自缘身在最高层&#34;}, 105 {&#34;poem&#34;: &#34;相见时难别亦难东风无力百花残&#34;}, 106 {&#34;poem&#34;: &#34;春蚕到死丝方尽蜡炬成灰泪始干&#34;}, 107 {&#34;poem&#34;: &#34;黑云压城城欲摧甲光向日金鳞开&#34;}, 108 {&#34;poem&#34;: &#34;庄生晓梦迷蝴蝶望帝春心托杜鹃&#34;}, 109 {&#34;poem&#34;: &#34;横看成岭侧成峰远近高低各不同&#34;}, 110 {&#34;poem&#34;: &#34;不识庐山真面目只缘身在此山中&#34;}, 111 {&#34;poem&#34;: &#34;两岸猿声啼不住轻舟已过万重山&#34;}, 112 {&#34;poem&#34;: &#34;莫笑农家腊酒浑丰年留客足鸡豚&#34;}, 113 {&#34;poem&#34;: &#34;山重水复疑无路柳暗花明又一村&#34;}, 114 {&#34;poem&#34;: &#34;黄梅时节家家雨青草池塘处处蛙&#34;}, 115 {&#34;poem&#34;: &#34;有约不来过夜半闲敲棋子落灯花&#34;}, 116 {&#34;poem&#34;: &#34;梅须逊雪三分白雪却输梅一段香&#34;}, 117 {&#34;poem&#34;: &#34;江山代有才人出各领风骚数百年&#34;}, 118 {&#34;poem&#34;: &#34;苟利国家生死以岂因祸福避趋之&#34;}, 119 {&#34;poem&#34;: &#34;我自横刀向天笑去留肝胆两昆仑&#34;}, 120 {&#34;poem&#34;: &#34;落红不是无情物化作春泥更护花&#34;}, 121 {&#34;poem&#34;: &#34;长风万里送秋雁对此可以酣高楼&#34;}, 122 {&#34;poem&#34;: &#34;抽刀断水水更流举杯消愁愁更愁&#34;}, 123 {&#34;poem&#34;: &#34;人生在世不称意明朝散发弄扁舟&#34;}, 124 {&#34;poem&#34;: &#34;大鹏一日同风起扶摇直上九万里&#34;}, 125 {&#34;poem&#34;: &#34;仰天大笑出门去我辈岂是蓬蒿人&#34;}, 126 {&#34;poem&#34;: &#34;天生我材必有用千金散尽还复来&#34;}, 127 {&#34;poem&#34;: &#34;黄河远上白云间一片孤城万仞山&#34;}, 128 {&#34;poem&#34;: &#34;羌笛何须怨杨柳春风不度玉门关&#34;}, 129 {&#34;poem&#34;: &#34;秦时明月汉时关万里长征人未还&#34;}, 130 {&#34;poem&#34;: &#34;但使龙城飞将在不教胡马度阴山&#34;}, 131 {&#34;poem&#34;: &#34;醉卧沙场君莫笑古来征战几人回&#34;}, 132 {&#34;poem&#34;: &#34;葡萄美酒夜光杯欲饮琵琶马上催&#34;}, 133 {&#34;poem&#34;: &#34;劝君更尽一杯酒西出阳关无故人&#34;}, 134 {&#34;poem&#34;: &#34;独在异乡为异客每逢佳节倍思亲&#34;}, 135 {&#34;poem&#34;: &#34;春城无处不飞花寒食东风御柳斜&#34;}, 136 {&#34;poem&#34;: &#34;日暮汉宫传蜡烛轻烟散入五侯家&#34;}, 137 {&#34;poem&#34;: &#34;两个黄鹂鸣翠柳一行白鹭上青天&#34;}, 138 {&#34;poem&#34;: &#34;窗含西岭千秋雪门泊东吴万里船&#34;}, 139 {&#34;poem&#34;: &#34;桃花潭水深千尺不及汪伦送我情&#34;}, 140 {&#34;poem&#34;: &#34;飞流直下三千尺疑是银河落九天&#34;}, 141 {&#34;poem&#34;: &#34;朝辞白帝彩云间千里江陵一日还&#34;}, 142 {&#34;poem&#34;: &#34;两岸猿声啼不住轻舟已过万重山&#34;}, 143 {&#34;poem&#34;: &#34;孤帆远影碧空尽唯见长江天际流&#34;}, 144 {&#34;poem&#34;: &#34;天门中断楚江开碧水东流至此回&#34;}, 145 {&#34;poem&#34;: &#34;两岸青山相对出孤帆一片日边来&#34;}, 146 {&#34;poem&#34;: &#34;遥望洞庭山水翠白银盘里一青螺&#34;}, 147 {&#34;poem&#34;: &#34;接天莲叶无穷碧映日荷花别样红&#34;}, 148 {&#34;poem&#34;: &#34;小荷才露尖尖角早有蜻蜓立上头&#34;}, 149 {&#34;poem&#34;: &#34;梅子金黄杏子肥麦花雪白菜花稀&#34;}, 150 {&#34;poem&#34;: &#34;日长篱落无人过惟有蜻蜓蛱蝶飞&#34;} 151 152 153 ]; 154 let currentPoem = &#34;&#34;; 155 let guessesLeft = 20; 156 157 function getRandomPoem() { 158 let randomIndex = Math.floor(Math.random() * poemData.length); 159 currentPoem = poemData[randomIndex].poem; 160 } 161 162 function removePunctuation(text) { 163 // 移除所有标点符号 164 return text.replace(/[，。！？；：“”‘’《》【】、]/g, &#34;&#34;); 165 } 166 167 function levenshteinDistance(a, b) { 168 if (a.length === 0) return b.length; 169 if (b.length === 0) return a.length; 170 171 let matrix = []; 172 for (let i = 0; i &lt;= b.length; i&#43;&#43;) { 173 matrix[i] = [i]; 174 } 175 for (let j = 0; j &lt;= a.length; j&#43;&#43;) { 176 matrix[0][j] = j; 177 } 178 179 for (let i = 1; i &lt;= b.length; i&#43;&#43;) { 180 for (let j = 1; j &lt;= a.length; j&#43;&#43;) { 181 if (b.charAt(i - 1) === a.charAt(j - 1)) { 182 matrix[i][j] = matrix[i - 1][j - 1]; 183 } else { 184 matrix[i][j] = Math.min( 185 matrix[i - 1][j - 1] &#43; 1, 186 matrix[i][j - 1] &#43; 1, 187 matrix[i - 1][j] &#43; 1 188 ); 189 } 190 } 191 } 192 193 return matrix[b.length][a.length]; 194 } 195 196 function findClosestPoem(guess) { 197 let closestPoem = &#34;&#34;; 198 let minDistance = Infinity; 199 200 for (let poem of poemData) { 201 let distance = levenshteinDistance(guess, poem.poem); 202 if (distance &lt; minDistance) { 203 minDistance = distance; 204 closestPoem = poem.poem; 205 } 206 } 207 208 return closestPoem; 209 } 210 211 function submitGuess() { 212 if (guessesLeft &lt;= 0) { 213 document.getElementById(&#34;message&#34;).innerText = &#34;猜测次数已用完，更换谜底。&#34;; 214 getRandomPoem(); 215 guessesLeft = 20; 216 document.getElementById(&#34;guesses&#34;).innerHTML = &#34;&#34;; 217 return; 218 } 219 220 let guess = document.getElementById(&#34;guessInput&#34;).value; 221 // 移除标点符号 222 guess = removePunctuation(guess); 223 // 截取前14个字 224 guess = guess.substring(0, 14); 225 226 if (guess.length &lt; 14) { 227 alert(&#34;请输入至少14个有效汉字！&#34;); 228 return; 229 } 230 231 // 检查用户输入是否在词库中 232 let isInLibrary = poemData.some(poem =&gt; poem.poem === guess); 233 if (!isInLibrary) { 234 let closestPoem = findClosestPoem(guess); 235 document.getElementById(&#34;message&#34;).innerText = `您输入的古诗词不在词库中，最相近的词句是：${closestPoem}`; 236 return; 237 } 238 239 let guessDisplay = document.createElement(&#34;div&#34;); 240 guessDisplay.className = &#34;guess&#34;; 241 for (let i = 0; i &lt; 14; i&#43;&#43;) { 242 let char = guess[i]; 243 let span = document.createElement(&#34;span&#34;); 244 span.innerText = char; 245 if (char === currentPoem[i]) { 246 span.className = &#34;correct&#34;; 247 } else if (currentPoem.includes(char)) { 248 span.className = &#34;present&#34;; 249 } else { 250 span.className = &#34;absent&#34;; 251 } 252 guessDisplay.appendChild(span); 253 } 254 document.getElementById(&#34;guesses&#34;).appendChild(guessDisplay); 255 256 if (guess === currentPoem) { 257 document.getElementById(&#34;message&#34;).innerText = &#34;恭喜你，猜对了！&#34;; 258 return; 259 } 260 261 guessesLeft--; 262 document.getElementById(&#34;message&#34;).innerText = `剩余猜测次数：${guessesLeft}`; 263 document.getElementById(&#34;guessInput&#34;).value = &#34;&#34;; 264 } 265 266 window.onload = function() { 267 getRandomPoem(); 268 }; 269 &lt;/script&gt; 270&lt;/body&gt; 271&lt;/html&gt;">
+
+
+
+
+  <meta itemprop="name" content="古诗游戏">
+  <meta itemprop="description" content="将代码内容copy到txt文件中，然后更改txt为html，使用浏览器打开就能玩。
+点击运行
+1&lt;!DOCTYPE html&gt; 2&lt;html lang=&#34;zh-CN&#34;&gt; 3&lt;head&gt; 4 &lt;meta charset=&#34;UTF-8&#34;&gt; 5 &lt;meta name=&#34;viewport&#34; content=&#34;width=device-width, initial-scale=1.0&#34;&gt; 6 &lt;title&gt;古诗词猜测游戏&lt;/title&gt; 7 &lt;style&gt; 8 .guess { 9 display: flex; 10 margin-bottom: 10px; 11 } 12 .guess span { 13 display: inline-block; 14 width: 20px; 15 height: 20px; 16 text-align: center; 17 line-height: 20px; 18 margin-right: 5px; 19 border: 1px solid #000; 20 } 21 .correct { 22 background-color: green; 23 } 24 .present { 25 background-color: yellow; 26 } 27 .absent { 28 background-color: gray; 29 } 30 .tooltip { 31 display: inline-block; 32 padding: 10px 20px; 33 background-color: #007bff; 34 color: #fff; 35 border-radius: 5px; 36 font-size: 16px; 37 box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); 38 } 39 &lt;/style&gt; 40&lt;/head&gt; 41&lt;body&gt; 42 &lt;h1&gt;古诗词猜测游戏&lt;/h1&gt; 43 &lt;div class=&#34;tooltip&#34;&gt; 44 &lt;p&gt;黄色：在谜底中，位置不对&lt;/p&gt; 45 &lt;p&gt;绿色：在谜底中，位置对&lt;/p&gt; 46 &lt;p&gt;灰色：不在谜底中&lt;/p&gt; 47 &lt;/div&gt; 48 &lt;p&gt;请输入14个字的古诗词：&lt;/p&gt; 49 &lt;input type=&#34;text&#34; id=&#34;guessInput&#34;&gt; 50 &lt;button onclick=&#34;submitGuess()&#34;&gt;确认&lt;/button&gt; 51 &lt;p&gt;&lt;/p&gt; 52 &lt;div id=&#34;guesses&#34;&gt;&lt;/div&gt; 53 &lt;p&gt;&lt;/p&gt; 54 &lt;p id=&#34;message&#34;&gt;&lt;/p&gt; 55 &lt;script&gt; 56 let poemData = [ 57 {&#34;poem&#34;: &#34;身无彩凤双飞翼心有灵犀一点通&#34;}, 58 {&#34;poem&#34;: &#34;心似白云常自在意如流水任东西&#34;}, 59 {&#34;poem&#34;: &#34;若无闲事挂心头便是人间好时节&#34;}, 60 {&#34;poem&#34;: &#34;飞流直下三千尺疑似银河落九天&#34;}, 61 {&#34;poem&#34;: &#34;春风又绿江南岸明月何时照我还&#34;}, 62 {&#34;poem&#34;: &#34;落霞与孤鹜齐飞秋水共长天一色&#34;}, 63 {&#34;poem&#34;: &#34;人生得意须尽欢莫使金樽空对月&#34;}, 64 {&#34;poem&#34;: &#34;山重水复疑无路柳暗花明又一村&#34;}, 65 {&#34;poem&#34;: &#34;天生我材必有用千金散尽还复来&#34;}, 66 {&#34;poem&#34;: &#34;无边落木萧萧下不尽长江滚滚来&#34;}, 67 {&#34;poem&#34;: &#34;醉卧沙场君莫笑古来征战几人回&#34;}, 68 {&#34;poem&#34;: &#34;不畏浮云遮望眼自缘身在最高层&#34;}, 69 {&#34;poem&#34;: &#34;纸上得来终觉浅绝知此事要躬行&#34;}, 70 {&#34;poem&#34;: &#34;不识庐山真面目只缘身在此山中&#34;}, 71 {&#34;poem&#34;: &#34;桃花潭水深千尺不及汪伦送我情&#34;}, 72 {&#34;poem&#34;: &#34;春风得意马蹄疾一日看尽长安花&#34;}, 73 {&#34;poem&#34;: &#34;两情若是久长时又岂在朝朝暮暮&#34;}, 74 {&#34;poem&#34;: &#34;劝君更尽一杯酒西出阳关无故人&#34;}, 75 {&#34;poem&#34;: &#34;莫愁前路无知己天下谁人不识君&#34;}, 76 {&#34;poem&#34;: &#34;忽如一夜春风来千树万树梨花开&#34;}, 77 {&#34;poem&#34;: &#34;黄沙百战穿金甲不破楼兰终不还&#34;}, 78 {&#34;poem&#34;: &#34;长风破浪会有时直挂云帆济沧海&#34;}, 79 {&#34;poem&#34;: &#34;天生丽质难自弃一朝选在君王侧&#34;}, 80 {&#34;poem&#34;: &#34;小楼一夜听春雨深巷明朝卖杏花&#34;}, 81 {&#34;poem&#34;: &#34;独在异乡为异客每逢佳节倍思亲&#34;}, 82 {&#34;poem&#34;: &#34;接天莲叶无穷碧映日荷花别样红&#34;}, 83 {&#34;poem&#34;: &#34;葡萄美酒夜光杯欲饮琵琶马上催&#34;}, 84 {&#34;poem&#34;: &#34;春江潮水连海平海上明月共潮生&#34;}, 85 {&#34;poem&#34;: &#34;抽刀断水水更流举杯消愁愁更愁&#34;}, 86 {&#34;poem&#34;: &#34;月落乌啼霜满天江枫渔火对愁眠&#34;}, 87 {&#34;poem&#34;: &#34;醉后不知天在水满船清梦压星河&#34;}, 88 {&#34;poem&#34;: &#34;衣带渐宽终不悔为伊消得人憔悴&#34;}, 89 {&#34;poem&#34;: &#34;日出江花红胜火春来江水绿如蓝&#34;}, 90 {&#34;poem&#34;: &#34;玲珑骰子安红豆入骨相思知不知&#34;}, 91 {&#34;poem&#34;: &#34;春风十里扬州路卷上珠帘总不如&#34;}, 92 {&#34;poem&#34;: &#34;曾经沧海难为水除却巫山不是云&#34;}, 93 {&#34;poem&#34;: &#34;同是天涯沦落人相逢何必曾相识&#34;}, 94 {&#34;poem&#34;: &#34;一骑红尘妃子笑无人知是荔枝来&#34;}, 95 {&#34;poem&#34;: &#34;问渠那得清如许为有源头活水来&#34;}, 96 {&#34;poem&#34;: &#34;无可奈何花落去似曾相识燕归来&#34;}, 97 {&#34;poem&#34;: &#34;沉舟侧畔千帆过病树前头万木春&#34;}, 98 {&#34;poem&#34;: &#34;天街小雨润如酥草色遥看近却无&#34;}, 99 {&#34;poem&#34;: &#34;乱花渐欲迷人眼浅草才能没马蹄&#34;}, 100 {&#34;poem&#34;: &#34;疏影横斜水清浅暗香浮动月黄昏&#34;}, 101 {&#34;poem&#34;: &#34;人生自是有情痴此恨不关风与月&#34;}, 102 {&#34;poem&#34;: &#34;东边日出西边雨道是无晴却有晴&#34;}, 103 {&#34;poem&#34;: &#34;身无彩凤双飞翼心有灵犀一点通&#34;}, 104 {&#34;poem&#34;: &#34;不畏浮云遮望眼自缘身在最高层&#34;}, 105 {&#34;poem&#34;: &#34;相见时难别亦难东风无力百花残&#34;}, 106 {&#34;poem&#34;: &#34;春蚕到死丝方尽蜡炬成灰泪始干&#34;}, 107 {&#34;poem&#34;: &#34;黑云压城城欲摧甲光向日金鳞开&#34;}, 108 {&#34;poem&#34;: &#34;庄生晓梦迷蝴蝶望帝春心托杜鹃&#34;}, 109 {&#34;poem&#34;: &#34;横看成岭侧成峰远近高低各不同&#34;}, 110 {&#34;poem&#34;: &#34;不识庐山真面目只缘身在此山中&#34;}, 111 {&#34;poem&#34;: &#34;两岸猿声啼不住轻舟已过万重山&#34;}, 112 {&#34;poem&#34;: &#34;莫笑农家腊酒浑丰年留客足鸡豚&#34;}, 113 {&#34;poem&#34;: &#34;山重水复疑无路柳暗花明又一村&#34;}, 114 {&#34;poem&#34;: &#34;黄梅时节家家雨青草池塘处处蛙&#34;}, 115 {&#34;poem&#34;: &#34;有约不来过夜半闲敲棋子落灯花&#34;}, 116 {&#34;poem&#34;: &#34;梅须逊雪三分白雪却输梅一段香&#34;}, 117 {&#34;poem&#34;: &#34;江山代有才人出各领风骚数百年&#34;}, 118 {&#34;poem&#34;: &#34;苟利国家生死以岂因祸福避趋之&#34;}, 119 {&#34;poem&#34;: &#34;我自横刀向天笑去留肝胆两昆仑&#34;}, 120 {&#34;poem&#34;: &#34;落红不是无情物化作春泥更护花&#34;}, 121 {&#34;poem&#34;: &#34;长风万里送秋雁对此可以酣高楼&#34;}, 122 {&#34;poem&#34;: &#34;抽刀断水水更流举杯消愁愁更愁&#34;}, 123 {&#34;poem&#34;: &#34;人生在世不称意明朝散发弄扁舟&#34;}, 124 {&#34;poem&#34;: &#34;大鹏一日同风起扶摇直上九万里&#34;}, 125 {&#34;poem&#34;: &#34;仰天大笑出门去我辈岂是蓬蒿人&#34;}, 126 {&#34;poem&#34;: &#34;天生我材必有用千金散尽还复来&#34;}, 127 {&#34;poem&#34;: &#34;黄河远上白云间一片孤城万仞山&#34;}, 128 {&#34;poem&#34;: &#34;羌笛何须怨杨柳春风不度玉门关&#34;}, 129 {&#34;poem&#34;: &#34;秦时明月汉时关万里长征人未还&#34;}, 130 {&#34;poem&#34;: &#34;但使龙城飞将在不教胡马度阴山&#34;}, 131 {&#34;poem&#34;: &#34;醉卧沙场君莫笑古来征战几人回&#34;}, 132 {&#34;poem&#34;: &#34;葡萄美酒夜光杯欲饮琵琶马上催&#34;}, 133 {&#34;poem&#34;: &#34;劝君更尽一杯酒西出阳关无故人&#34;}, 134 {&#34;poem&#34;: &#34;独在异乡为异客每逢佳节倍思亲&#34;}, 135 {&#34;poem&#34;: &#34;春城无处不飞花寒食东风御柳斜&#34;}, 136 {&#34;poem&#34;: &#34;日暮汉宫传蜡烛轻烟散入五侯家&#34;}, 137 {&#34;poem&#34;: &#34;两个黄鹂鸣翠柳一行白鹭上青天&#34;}, 138 {&#34;poem&#34;: &#34;窗含西岭千秋雪门泊东吴万里船&#34;}, 139 {&#34;poem&#34;: &#34;桃花潭水深千尺不及汪伦送我情&#34;}, 140 {&#34;poem&#34;: &#34;飞流直下三千尺疑是银河落九天&#34;}, 141 {&#34;poem&#34;: &#34;朝辞白帝彩云间千里江陵一日还&#34;}, 142 {&#34;poem&#34;: &#34;两岸猿声啼不住轻舟已过万重山&#34;}, 143 {&#34;poem&#34;: &#34;孤帆远影碧空尽唯见长江天际流&#34;}, 144 {&#34;poem&#34;: &#34;天门中断楚江开碧水东流至此回&#34;}, 145 {&#34;poem&#34;: &#34;两岸青山相对出孤帆一片日边来&#34;}, 146 {&#34;poem&#34;: &#34;遥望洞庭山水翠白银盘里一青螺&#34;}, 147 {&#34;poem&#34;: &#34;接天莲叶无穷碧映日荷花别样红&#34;}, 148 {&#34;poem&#34;: &#34;小荷才露尖尖角早有蜻蜓立上头&#34;}, 149 {&#34;poem&#34;: &#34;梅子金黄杏子肥麦花雪白菜花稀&#34;}, 150 {&#34;poem&#34;: &#34;日长篱落无人过惟有蜻蜓蛱蝶飞&#34;} 151 152 153 ]; 154 let currentPoem = &#34;&#34;; 155 let guessesLeft = 20; 156 157 function getRandomPoem() { 158 let randomIndex = Math.floor(Math.random() * poemData.length); 159 currentPoem = poemData[randomIndex].poem; 160 } 161 162 function removePunctuation(text) { 163 // 移除所有标点符号 164 return text.replace(/[，。！？；：“”‘’《》【】、]/g, &#34;&#34;); 165 } 166 167 function levenshteinDistance(a, b) { 168 if (a.length === 0) return b.length; 169 if (b.length === 0) return a.length; 170 171 let matrix = []; 172 for (let i = 0; i &lt;= b.length; i&#43;&#43;) { 173 matrix[i] = [i]; 174 } 175 for (let j = 0; j &lt;= a.length; j&#43;&#43;) { 176 matrix[0][j] = j; 177 } 178 179 for (let i = 1; i &lt;= b.length; i&#43;&#43;) { 180 for (let j = 1; j &lt;= a.length; j&#43;&#43;) { 181 if (b.charAt(i - 1) === a.charAt(j - 1)) { 182 matrix[i][j] = matrix[i - 1][j - 1]; 183 } else { 184 matrix[i][j] = Math.min( 185 matrix[i - 1][j - 1] &#43; 1, 186 matrix[i][j - 1] &#43; 1, 187 matrix[i - 1][j] &#43; 1 188 ); 189 } 190 } 191 } 192 193 return matrix[b.length][a.length]; 194 } 195 196 function findClosestPoem(guess) { 197 let closestPoem = &#34;&#34;; 198 let minDistance = Infinity; 199 200 for (let poem of poemData) { 201 let distance = levenshteinDistance(guess, poem.poem); 202 if (distance &lt; minDistance) { 203 minDistance = distance; 204 closestPoem = poem.poem; 205 } 206 } 207 208 return closestPoem; 209 } 210 211 function submitGuess() { 212 if (guessesLeft &lt;= 0) { 213 document.getElementById(&#34;message&#34;).innerText = &#34;猜测次数已用完，更换谜底。&#34;; 214 getRandomPoem(); 215 guessesLeft = 20; 216 document.getElementById(&#34;guesses&#34;).innerHTML = &#34;&#34;; 217 return; 218 } 219 220 let guess = document.getElementById(&#34;guessInput&#34;).value; 221 // 移除标点符号 222 guess = removePunctuation(guess); 223 // 截取前14个字 224 guess = guess.substring(0, 14); 225 226 if (guess.length &lt; 14) { 227 alert(&#34;请输入至少14个有效汉字！&#34;); 228 return; 229 } 230 231 // 检查用户输入是否在词库中 232 let isInLibrary = poemData.some(poem =&gt; poem.poem === guess); 233 if (!isInLibrary) { 234 let closestPoem = findClosestPoem(guess); 235 document.getElementById(&#34;message&#34;).innerText = `您输入的古诗词不在词库中，最相近的词句是：${closestPoem}`; 236 return; 237 } 238 239 let guessDisplay = document.createElement(&#34;div&#34;); 240 guessDisplay.className = &#34;guess&#34;; 241 for (let i = 0; i &lt; 14; i&#43;&#43;) { 242 let char = guess[i]; 243 let span = document.createElement(&#34;span&#34;); 244 span.innerText = char; 245 if (char === currentPoem[i]) { 246 span.className = &#34;correct&#34;; 247 } else if (currentPoem.includes(char)) { 248 span.className = &#34;present&#34;; 249 } else { 250 span.className = &#34;absent&#34;; 251 } 252 guessDisplay.appendChild(span); 253 } 254 document.getElementById(&#34;guesses&#34;).appendChild(guessDisplay); 255 256 if (guess === currentPoem) { 257 document.getElementById(&#34;message&#34;).innerText = &#34;恭喜你，猜对了！&#34;; 258 return; 259 } 260 261 guessesLeft--; 262 document.getElementById(&#34;message&#34;).innerText = `剩余猜测次数：${guessesLeft}`; 263 document.getElementById(&#34;guessInput&#34;).value = &#34;&#34;; 264 } 265 266 window.onload = function() { 267 getRandomPoem(); 268 }; 269 &lt;/script&gt; 270&lt;/body&gt; 271&lt;/html&gt;">
+  <meta itemprop="datePublished" content="2025-04-10T00:00:00+00:00">
+  <meta itemprop="dateModified" content="2025-04-10T00:00:00+00:00">
+  <meta itemprop="wordCount" content="889">
+  <meta itemprop="image" content="http://localhost:1313/images/share.png">
+  <meta itemprop="keywords" content="玩">
+<meta name="referrer" content="no-referrer-when-downgrade" />
+
+  <style>
+  :root {
+      --width: 720px;
+      --font-main: "Smiley Sans Oblique";
+      --font-secondary: "LXGW WenKai";
+      --font-scale: 1em;
+      --background-color: #fff;
+      --heading-color: #222;
+      --text-color: #444;
+      --link-color: #3273dc;
+      --visited-color:  #8b6fcb;
+      --code-background-color: #f2f2f2;
+      --code-color: #222;
+      --blockquote-color: #222;
+  }
+
+  @media (prefers-color-scheme: dark) {
+      :root {
+          --background-color: #01242e;
+          --heading-color: #eee;
+          --text-color: #ddd;
+          --link-color: #8cc2dd;
+          --visited-color:  #8b6fcb;
+          --code-background-color: #000;
+          --code-color: #ddd;
+          --blockquote-color: #ccc;
+      }
+  }
+
+  body {
+      font-family: var(--font-secondary);
+      font-size: var(--font-scale);
+      margin: auto;
+      padding: 20px;
+      max-width: var(--width);
+      text-align: left;
+      background-color: var(--background-color);
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      line-height: 1.5;
+      color: var(--text-color);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+      font-family: var(--font-main);
+      color: var(--heading-color);
+  }
+
+  a {
+      color: var(--link-color);
+      cursor: pointer;
+      text-decoration: none;
+  }
+
+  a:hover {
+      text-decoration: underline;
+  }
+
+  nav a {
+      margin-right: 8px;
+  }
+
+  strong, b {
+      color: var(--heading-color);
+  }
+
+  button {
+      margin: 0;
+      cursor: pointer;
+  }
+
+  time {
+   	font-family: monospace;
+    	font-style: normal;
+    	font-size: 15px;
+  }
+
+  main {
+      line-height: 1.6;
+  }
+
+  table {
+      width: 100%;
+  }
+
+  hr {
+      border: 0;
+      border-top: 1px dashed;
+  }
+
+  img {
+      max-width: 100%;
+  }
+
+  code {
+      font-family: "LXGW WenKai";
+      padding: 2px;
+      background-color: var(--code-background-color);
+      color: var(--code-color);
+      border-radius: 3px;
+  }
+
+  blockquote {
+      border-left: 1px solid #999;
+      color: var(--code-color);
+      padding-left: 20px;
+      font-style: italic;
+  }
+
+  footer {
+      padding: 25px 0;
+      text-align: center;
+  }
+
+  .title:hover {
+      text-decoration: none;
+  }
+
+  .title h1 {
+      font-size: 1.5em;
+  }
+
+  .inline {
+      width: auto !important;
+  }
+
+  .highlight, .code {
+      padding: 1px 15px;
+      background-color: var(--code-background-color);
+      color: var(--code-color);
+      border-radius: 3px;
+      margin-block-start: 1em;
+      margin-block-end: 1em;
+      overflow-x: auto;
+  }
+
+   
+  ul.blog-posts {
+      list-style-type: none;
+      padding: unset;
+  }
+
+  ul.blog-posts li {
+      display: flex;
+  }
+
+  ul.blog-posts li span {
+      flex: 0 0 130px;
+  }
+
+  ul.blog-posts li a:visited {
+      color: var(--visited-color);
+  }
+
+
+  body, .article-page {
+    font-family:"LXGW WenKai", sans-serif;
+    }
+
+</style>
+
+
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)'], ['$', '$']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+ 
+
+
+<link rel='stylesheet' href='https://chinese-fonts-cdn.deno.dev/packages/lxgwwenkai/dist/LXGWWenKai-Bold/result.css' /> 
+<link rel='stylesheet' href='https://chinese-fonts-cdn.deno.dev/packages/stdgt/dist/%E4%B8%8A%E5%9B%BE%E4%B8%9C%E8%A7%82%E4%BD%93-%E7%B2%97%E4%BD%93/result.css' /> 
+<link rel='stylesheet' href='https://chinese-fonts-cdn.deno.dev/packages/dyh/dist/SmileySans-Oblique/result.css' /> 
+
+</head>
+
+<body>
+  <header><a href="/" class="title">
+  <h2>ʕ•ᴥ•ʔ 橙红色时雨 Blog</h2>
+</a>
+<nav><a href="/">Home</a>
+
+<a href="/bear/">友链</a>
+
+
+<a href="/blog">Blog</a>
+
+</nav>
+</header>
+  <main>
+
+<h1>古诗游戏</h1>
+<p>
+  <i>
+    <time datetime='2025-04-10'>
+      10 Apr, 2025
+    </time>
+  </i>
+</p>
+
+<content>
+  <p>将代码内容copy到txt文件中，然后更改txt为html，使用浏览器打开就能玩。</p>
+<p><a href="../html/blog5.html">点击运行</a></p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  1</span><span><span style="color:#007020">&lt;!DOCTYPE html&gt;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  2</span><span>&lt;<span style="color:#062873;font-weight:bold">html</span> <span style="color:#4070a0">lang</span><span style="color:#666">=</span><span style="color:#4070a0">&#34;zh-CN&#34;</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  3</span><span>&lt;<span style="color:#062873;font-weight:bold">head</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  4</span><span>    &lt;<span style="color:#062873;font-weight:bold">meta</span> <span style="color:#4070a0">charset</span><span style="color:#666">=</span><span style="color:#4070a0">&#34;UTF-8&#34;</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  5</span><span>    &lt;<span style="color:#062873;font-weight:bold">meta</span> <span style="color:#4070a0">name</span><span style="color:#666">=</span><span style="color:#4070a0">&#34;viewport&#34;</span> <span style="color:#4070a0">content</span><span style="color:#666">=</span><span style="color:#4070a0">&#34;width=device-width, initial-scale=1.0&#34;</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  6</span><span>    &lt;<span style="color:#062873;font-weight:bold">title</span>&gt;古诗词猜测游戏&lt;/<span style="color:#062873;font-weight:bold">title</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  7</span><span>    &lt;<span style="color:#062873;font-weight:bold">style</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  8</span><span>        .<span style="color:#0e84b5;font-weight:bold">guess</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  9</span><span>            <span style="color:#007020;font-weight:bold">display</span>: <span style="color:#007020;font-weight:bold">flex</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 10</span><span>            <span style="color:#007020;font-weight:bold">margin-bottom</span>: <span style="color:#40a070">10</span><span style="color:#902000">px</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 11</span><span>        }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 12</span><span>        .<span style="color:#0e84b5;font-weight:bold">guess</span> <span style="color:#062873;font-weight:bold">span</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 13</span><span>            <span style="color:#007020;font-weight:bold">display</span>: <span style="color:#007020;font-weight:bold">inline-block</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 14</span><span>            <span style="color:#007020;font-weight:bold">width</span>: <span style="color:#40a070">20</span><span style="color:#902000">px</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 15</span><span>            <span style="color:#007020;font-weight:bold">height</span>: <span style="color:#40a070">20</span><span style="color:#902000">px</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 16</span><span>            <span style="color:#007020;font-weight:bold">text-align</span>: <span style="color:#007020;font-weight:bold">center</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 17</span><span>            <span style="color:#007020;font-weight:bold">line-height</span>: <span style="color:#40a070">20</span><span style="color:#902000">px</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 18</span><span>            <span style="color:#007020;font-weight:bold">margin-right</span>: <span style="color:#40a070">5</span><span style="color:#902000">px</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 19</span><span>            <span style="color:#007020;font-weight:bold">border</span>: <span style="color:#40a070">1</span><span style="color:#902000">px</span> <span style="color:#007020;font-weight:bold">solid</span> <span style="color:#40a070">#000</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 20</span><span>        }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 21</span><span>        .<span style="color:#0e84b5;font-weight:bold">correct</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 22</span><span>            <span style="color:#007020;font-weight:bold">background-color</span>: <span style="color:#007020;font-weight:bold">green</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 23</span><span>        }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 24</span><span>        .<span style="color:#0e84b5;font-weight:bold">present</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 25</span><span>            <span style="color:#007020;font-weight:bold">background-color</span>: <span style="color:#007020;font-weight:bold">yellow</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 26</span><span>        }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 27</span><span>        .<span style="color:#0e84b5;font-weight:bold">absent</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 28</span><span>            <span style="color:#007020;font-weight:bold">background-color</span>: <span style="color:#007020;font-weight:bold">gray</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 29</span><span>        }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 30</span><span>        .<span style="color:#0e84b5;font-weight:bold">tooltip</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 31</span><span>            <span style="color:#007020;font-weight:bold">display</span>: <span style="color:#007020;font-weight:bold">inline-block</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 32</span><span>            <span style="color:#007020;font-weight:bold">padding</span>: <span style="color:#40a070">10</span><span style="color:#902000">px</span> <span style="color:#40a070">20</span><span style="color:#902000">px</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 33</span><span>            <span style="color:#007020;font-weight:bold">background-color</span>: <span style="color:#40a070">#007bff</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 34</span><span>            <span style="color:#007020;font-weight:bold">color</span>: <span style="color:#40a070">#fff</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 35</span><span>            <span style="color:#007020;font-weight:bold">border-radius</span>: <span style="color:#40a070">5</span><span style="color:#902000">px</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 36</span><span>            <span style="color:#007020;font-weight:bold">font-size</span>: <span style="color:#40a070">16</span><span style="color:#902000">px</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 37</span><span>            <span style="color:#007020;font-weight:bold">box-shadow</span>: <span style="color:#40a070">0</span> <span style="color:#40a070">2</span><span style="color:#902000">px</span> <span style="color:#40a070">5</span><span style="color:#902000">px</span> <span style="color:#007020">rgba</span>(<span style="color:#40a070">0</span>, <span style="color:#40a070">0</span>, <span style="color:#40a070">0</span>, <span style="color:#40a070">0.2</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 38</span><span>        }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 39</span><span>    &lt;/<span style="color:#062873;font-weight:bold">style</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 40</span><span>&lt;/<span style="color:#062873;font-weight:bold">head</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 41</span><span>&lt;<span style="color:#062873;font-weight:bold">body</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 42</span><span>    &lt;<span style="color:#062873;font-weight:bold">h1</span>&gt;古诗词猜测游戏&lt;/<span style="color:#062873;font-weight:bold">h1</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 43</span><span>    &lt;<span style="color:#062873;font-weight:bold">div</span> <span style="color:#4070a0">class</span><span style="color:#666">=</span><span style="color:#4070a0">&#34;tooltip&#34;</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 44</span><span>    &lt;<span style="color:#062873;font-weight:bold">p</span>&gt;黄色：在谜底中，位置不对&lt;/<span style="color:#062873;font-weight:bold">p</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 45</span><span>    &lt;<span style="color:#062873;font-weight:bold">p</span>&gt;绿色：在谜底中，位置对&lt;/<span style="color:#062873;font-weight:bold">p</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 46</span><span>    &lt;<span style="color:#062873;font-weight:bold">p</span>&gt;灰色：不在谜底中&lt;/<span style="color:#062873;font-weight:bold">p</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 47</span><span>    &lt;/<span style="color:#062873;font-weight:bold">div</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 48</span><span>    &lt;<span style="color:#062873;font-weight:bold">p</span>&gt;请输入14个字的古诗词：&lt;/<span style="color:#062873;font-weight:bold">p</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 49</span><span>    &lt;<span style="color:#062873;font-weight:bold">input</span> <span style="color:#4070a0">type</span><span style="color:#666">=</span><span style="color:#4070a0">&#34;text&#34;</span> <span style="color:#4070a0">id</span><span style="color:#666">=</span><span style="color:#4070a0">&#34;guessInput&#34;</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 50</span><span>    &lt;<span style="color:#062873;font-weight:bold">button</span> <span style="color:#4070a0">onclick</span><span style="color:#666">=</span><span style="color:#4070a0">&#34;submitGuess()&#34;</span>&gt;确认&lt;/<span style="color:#062873;font-weight:bold">button</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 51</span><span>    &lt;<span style="color:#062873;font-weight:bold">p</span>&gt;&lt;/<span style="color:#062873;font-weight:bold">p</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 52</span><span>    &lt;<span style="color:#062873;font-weight:bold">div</span> <span style="color:#4070a0">id</span><span style="color:#666">=</span><span style="color:#4070a0">&#34;guesses&#34;</span>&gt;&lt;/<span style="color:#062873;font-weight:bold">div</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 53</span><span>    &lt;<span style="color:#062873;font-weight:bold">p</span>&gt;&lt;/<span style="color:#062873;font-weight:bold">p</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 54</span><span>    &lt;<span style="color:#062873;font-weight:bold">p</span> <span style="color:#4070a0">id</span><span style="color:#666">=</span><span style="color:#4070a0">&#34;message&#34;</span>&gt;&lt;/<span style="color:#062873;font-weight:bold">p</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 55</span><span>    &lt;<span style="color:#062873;font-weight:bold">script</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 56</span><span>        <span style="color:#007020;font-weight:bold">let</span> poemData <span style="color:#666">=</span> [
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 57</span><span>            {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;身无彩凤双飞翼心有灵犀一点通&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 58</span><span>            {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;心似白云常自在意如流水任东西&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 59</span><span>            {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;若无闲事挂心头便是人间好时节&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 60</span><span>            {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;飞流直下三千尺疑似银河落九天&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 61</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;春风又绿江南岸明月何时照我还&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 62</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;落霞与孤鹜齐飞秋水共长天一色&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 63</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;人生得意须尽欢莫使金樽空对月&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 64</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;山重水复疑无路柳暗花明又一村&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 65</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;天生我材必有用千金散尽还复来&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 66</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;无边落木萧萧下不尽长江滚滚来&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 67</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;醉卧沙场君莫笑古来征战几人回&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 68</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;不畏浮云遮望眼自缘身在最高层&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 69</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;纸上得来终觉浅绝知此事要躬行&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 70</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;不识庐山真面目只缘身在此山中&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 71</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;桃花潭水深千尺不及汪伦送我情&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 72</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;春风得意马蹄疾一日看尽长安花&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 73</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;两情若是久长时又岂在朝朝暮暮&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 74</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;劝君更尽一杯酒西出阳关无故人&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 75</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;莫愁前路无知己天下谁人不识君&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 76</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;忽如一夜春风来千树万树梨花开&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 77</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;黄沙百战穿金甲不破楼兰终不还&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 78</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;长风破浪会有时直挂云帆济沧海&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 79</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;天生丽质难自弃一朝选在君王侧&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 80</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;小楼一夜听春雨深巷明朝卖杏花&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 81</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;独在异乡为异客每逢佳节倍思亲&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 82</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;接天莲叶无穷碧映日荷花别样红&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 83</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;葡萄美酒夜光杯欲饮琵琶马上催&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 84</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;春江潮水连海平海上明月共潮生&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 85</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;抽刀断水水更流举杯消愁愁更愁&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 86</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;月落乌啼霜满天江枫渔火对愁眠&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 87</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;醉后不知天在水满船清梦压星河&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 88</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;衣带渐宽终不悔为伊消得人憔悴&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 89</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;日出江花红胜火春来江水绿如蓝&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 90</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;玲珑骰子安红豆入骨相思知不知&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 91</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;春风十里扬州路卷上珠帘总不如&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 92</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;曾经沧海难为水除却巫山不是云&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 93</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;同是天涯沦落人相逢何必曾相识&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 94</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;一骑红尘妃子笑无人知是荔枝来&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 95</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;问渠那得清如许为有源头活水来&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 96</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;无可奈何花落去似曾相识燕归来&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 97</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;沉舟侧畔千帆过病树前头万木春&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 98</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;天街小雨润如酥草色遥看近却无&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 99</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;乱花渐欲迷人眼浅草才能没马蹄&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">100</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;疏影横斜水清浅暗香浮动月黄昏&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">101</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;人生自是有情痴此恨不关风与月&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">102</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;东边日出西边雨道是无晴却有晴&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">103</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;身无彩凤双飞翼心有灵犀一点通&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">104</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;不畏浮云遮望眼自缘身在最高层&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">105</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;相见时难别亦难东风无力百花残&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">106</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;春蚕到死丝方尽蜡炬成灰泪始干&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">107</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;黑云压城城欲摧甲光向日金鳞开&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">108</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;庄生晓梦迷蝴蝶望帝春心托杜鹃&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">109</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;横看成岭侧成峰远近高低各不同&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">110</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;不识庐山真面目只缘身在此山中&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">111</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;两岸猿声啼不住轻舟已过万重山&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">112</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;莫笑农家腊酒浑丰年留客足鸡豚&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">113</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;山重水复疑无路柳暗花明又一村&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">114</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;黄梅时节家家雨青草池塘处处蛙&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">115</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;有约不来过夜半闲敲棋子落灯花&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">116</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;梅须逊雪三分白雪却输梅一段香&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">117</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;江山代有才人出各领风骚数百年&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">118</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;苟利国家生死以岂因祸福避趋之&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">119</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;我自横刀向天笑去留肝胆两昆仑&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">120</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;落红不是无情物化作春泥更护花&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">121</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;长风万里送秋雁对此可以酣高楼&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">122</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;抽刀断水水更流举杯消愁愁更愁&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">123</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;人生在世不称意明朝散发弄扁舟&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">124</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;大鹏一日同风起扶摇直上九万里&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">125</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;仰天大笑出门去我辈岂是蓬蒿人&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">126</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;天生我材必有用千金散尽还复来&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">127</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;黄河远上白云间一片孤城万仞山&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">128</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;羌笛何须怨杨柳春风不度玉门关&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">129</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;秦时明月汉时关万里长征人未还&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">130</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;但使龙城飞将在不教胡马度阴山&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">131</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;醉卧沙场君莫笑古来征战几人回&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">132</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;葡萄美酒夜光杯欲饮琵琶马上催&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">133</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;劝君更尽一杯酒西出阳关无故人&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">134</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;独在异乡为异客每逢佳节倍思亲&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">135</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;春城无处不飞花寒食东风御柳斜&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">136</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;日暮汉宫传蜡烛轻烟散入五侯家&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">137</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;两个黄鹂鸣翠柳一行白鹭上青天&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">138</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;窗含西岭千秋雪门泊东吴万里船&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">139</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;桃花潭水深千尺不及汪伦送我情&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">140</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;飞流直下三千尺疑是银河落九天&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">141</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;朝辞白帝彩云间千里江陵一日还&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">142</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;两岸猿声啼不住轻舟已过万重山&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">143</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;孤帆远影碧空尽唯见长江天际流&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">144</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;天门中断楚江开碧水东流至此回&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">145</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;两岸青山相对出孤帆一片日边来&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">146</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;遥望洞庭山水翠白银盘里一青螺&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">147</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;接天莲叶无穷碧映日荷花别样红&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">148</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;小荷才露尖尖角早有蜻蜓立上头&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">149</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;梅子金黄杏子肥麦花雪白菜花稀&#34;</span>},
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">150</span><span>    {<span style="color:#4070a0">&#34;poem&#34;</span><span style="color:#666">:</span> <span style="color:#4070a0">&#34;日长篱落无人过惟有蜻蜓蛱蝶飞&#34;</span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">151</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">152</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">153</span><span>        ];
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">154</span><span>        <span style="color:#007020;font-weight:bold">let</span> currentPoem <span style="color:#666">=</span> <span style="color:#4070a0">&#34;&#34;</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">155</span><span>        <span style="color:#007020;font-weight:bold">let</span> guessesLeft <span style="color:#666">=</span> <span style="color:#40a070">20</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">156</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">157</span><span>        <span style="color:#007020;font-weight:bold">function</span> getRandomPoem() {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">158</span><span>            <span style="color:#007020;font-weight:bold">let</span> randomIndex <span style="color:#666">=</span> <span style="color:#007020">Math</span>.floor(<span style="color:#007020">Math</span>.random() <span style="color:#666">*</span> poemData.length);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">159</span><span>            currentPoem <span style="color:#666">=</span> poemData[randomIndex].poem;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">160</span><span>        }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">161</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">162</span><span>        <span style="color:#007020;font-weight:bold">function</span> removePunctuation(text) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">163</span><span>            <span style="color:#60a0b0;font-style:italic">// 移除所有标点符号
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">164</span><span><span style="color:#60a0b0;font-style:italic"></span>            <span style="color:#007020;font-weight:bold">return</span> text.replace(<span style="color:#235388">/[，。！？；：“”‘’《》【】、]/g</span>, <span style="color:#4070a0">&#34;&#34;</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">165</span><span>        }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">166</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">167</span><span>        <span style="color:#007020;font-weight:bold">function</span> levenshteinDistance(a, b) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">168</span><span>            <span style="color:#007020;font-weight:bold">if</span> (a.length <span style="color:#666">===</span> <span style="color:#40a070">0</span>) <span style="color:#007020;font-weight:bold">return</span> b.length;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">169</span><span>            <span style="color:#007020;font-weight:bold">if</span> (b.length <span style="color:#666">===</span> <span style="color:#40a070">0</span>) <span style="color:#007020;font-weight:bold">return</span> a.length;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">170</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">171</span><span>            <span style="color:#007020;font-weight:bold">let</span> matrix <span style="color:#666">=</span> [];
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">172</span><span>            <span style="color:#007020;font-weight:bold">for</span> (<span style="color:#007020;font-weight:bold">let</span> i <span style="color:#666">=</span> <span style="color:#40a070">0</span>; i <span style="color:#666">&lt;=</span> b.length; i<span style="color:#666">++</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">173</span><span>                matrix[i] <span style="color:#666">=</span> [i];
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">174</span><span>            }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">175</span><span>            <span style="color:#007020;font-weight:bold">for</span> (<span style="color:#007020;font-weight:bold">let</span> j <span style="color:#666">=</span> <span style="color:#40a070">0</span>; j <span style="color:#666">&lt;=</span> a.length; j<span style="color:#666">++</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">176</span><span>                matrix[<span style="color:#40a070">0</span>][j] <span style="color:#666">=</span> j;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">177</span><span>            }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">178</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">179</span><span>            <span style="color:#007020;font-weight:bold">for</span> (<span style="color:#007020;font-weight:bold">let</span> i <span style="color:#666">=</span> <span style="color:#40a070">1</span>; i <span style="color:#666">&lt;=</span> b.length; i<span style="color:#666">++</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">180</span><span>                <span style="color:#007020;font-weight:bold">for</span> (<span style="color:#007020;font-weight:bold">let</span> j <span style="color:#666">=</span> <span style="color:#40a070">1</span>; j <span style="color:#666">&lt;=</span> a.length; j<span style="color:#666">++</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">181</span><span>                    <span style="color:#007020;font-weight:bold">if</span> (b.charAt(i <span style="color:#666">-</span> <span style="color:#40a070">1</span>) <span style="color:#666">===</span> a.charAt(j <span style="color:#666">-</span> <span style="color:#40a070">1</span>)) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">182</span><span>                        matrix[i][j] <span style="color:#666">=</span> matrix[i <span style="color:#666">-</span> <span style="color:#40a070">1</span>][j <span style="color:#666">-</span> <span style="color:#40a070">1</span>];
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">183</span><span>                    } <span style="color:#007020;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">184</span><span>                        matrix[i][j] <span style="color:#666">=</span> <span style="color:#007020">Math</span>.min(
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">185</span><span>                            matrix[i <span style="color:#666">-</span> <span style="color:#40a070">1</span>][j <span style="color:#666">-</span> <span style="color:#40a070">1</span>] <span style="color:#666">+</span> <span style="color:#40a070">1</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">186</span><span>                            matrix[i][j <span style="color:#666">-</span> <span style="color:#40a070">1</span>] <span style="color:#666">+</span> <span style="color:#40a070">1</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">187</span><span>                            matrix[i <span style="color:#666">-</span> <span style="color:#40a070">1</span>][j] <span style="color:#666">+</span> <span style="color:#40a070">1</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">188</span><span>                        );
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">189</span><span>                    }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">190</span><span>                }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">191</span><span>            }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">192</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">193</span><span>            <span style="color:#007020;font-weight:bold">return</span> matrix[b.length][a.length];
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">194</span><span>        }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">195</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">196</span><span>        <span style="color:#007020;font-weight:bold">function</span> findClosestPoem(guess) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">197</span><span>            <span style="color:#007020;font-weight:bold">let</span> closestPoem <span style="color:#666">=</span> <span style="color:#4070a0">&#34;&#34;</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">198</span><span>            <span style="color:#007020;font-weight:bold">let</span> minDistance <span style="color:#666">=</span> <span style="color:#007020;font-weight:bold">Infinity</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">199</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">200</span><span>            <span style="color:#007020;font-weight:bold">for</span> (<span style="color:#007020;font-weight:bold">let</span> poem <span style="color:#007020;font-weight:bold">of</span> poemData) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">201</span><span>                <span style="color:#007020;font-weight:bold">let</span> distance <span style="color:#666">=</span> levenshteinDistance(guess, poem.poem);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">202</span><span>                <span style="color:#007020;font-weight:bold">if</span> (distance <span style="color:#666">&lt;</span> minDistance) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">203</span><span>                    minDistance <span style="color:#666">=</span> distance;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">204</span><span>                    closestPoem <span style="color:#666">=</span> poem.poem;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">205</span><span>                }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">206</span><span>            }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">207</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">208</span><span>            <span style="color:#007020;font-weight:bold">return</span> closestPoem;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">209</span><span>        }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">210</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">211</span><span>        <span style="color:#007020;font-weight:bold">function</span> submitGuess() {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">212</span><span>            <span style="color:#007020;font-weight:bold">if</span> (guessesLeft <span style="color:#666">&lt;=</span> <span style="color:#40a070">0</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">213</span><span>                <span style="color:#007020">document</span>.getElementById(<span style="color:#4070a0">&#34;message&#34;</span>).innerText <span style="color:#666">=</span> <span style="color:#4070a0">&#34;猜测次数已用完，更换谜底。&#34;</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">214</span><span>                getRandomPoem();
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">215</span><span>                guessesLeft <span style="color:#666">=</span> <span style="color:#40a070">20</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">216</span><span>                <span style="color:#007020">document</span>.getElementById(<span style="color:#4070a0">&#34;guesses&#34;</span>).innerHTML <span style="color:#666">=</span> <span style="color:#4070a0">&#34;&#34;</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">217</span><span>                <span style="color:#007020;font-weight:bold">return</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">218</span><span>            }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">219</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">220</span><span>            <span style="color:#007020;font-weight:bold">let</span> guess <span style="color:#666">=</span> <span style="color:#007020">document</span>.getElementById(<span style="color:#4070a0">&#34;guessInput&#34;</span>).value;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">221</span><span>            <span style="color:#60a0b0;font-style:italic">// 移除标点符号
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">222</span><span><span style="color:#60a0b0;font-style:italic"></span>            guess <span style="color:#666">=</span> removePunctuation(guess);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">223</span><span>            <span style="color:#60a0b0;font-style:italic">// 截取前14个字
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">224</span><span><span style="color:#60a0b0;font-style:italic"></span>            guess <span style="color:#666">=</span> guess.substring(<span style="color:#40a070">0</span>, <span style="color:#40a070">14</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">225</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">226</span><span>            <span style="color:#007020;font-weight:bold">if</span> (guess.length <span style="color:#666">&lt;</span> <span style="color:#40a070">14</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">227</span><span>                alert(<span style="color:#4070a0">&#34;请输入至少14个有效汉字！&#34;</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">228</span><span>                <span style="color:#007020;font-weight:bold">return</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">229</span><span>            }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">230</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">231</span><span>            <span style="color:#60a0b0;font-style:italic">// 检查用户输入是否在词库中
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">232</span><span><span style="color:#60a0b0;font-style:italic"></span>            <span style="color:#007020;font-weight:bold">let</span> isInLibrary <span style="color:#666">=</span> poemData.some(poem =&gt; poem.poem <span style="color:#666">===</span> guess);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">233</span><span>            <span style="color:#007020;font-weight:bold">if</span> (<span style="color:#666">!</span>isInLibrary) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">234</span><span>                <span style="color:#007020;font-weight:bold">let</span> closestPoem <span style="color:#666">=</span> findClosestPoem(guess);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">235</span><span>                <span style="color:#007020">document</span>.getElementById(<span style="color:#4070a0">&#34;message&#34;</span>).innerText <span style="color:#666">=</span> <span style="color:#4070a0">`您输入的古诗词不在词库中，最相近的词句是：</span><span style="color:#70a0d0">${</span>closestPoem<span style="color:#70a0d0">}</span><span style="color:#4070a0">`</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">236</span><span>                <span style="color:#007020;font-weight:bold">return</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">237</span><span>            }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">238</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">239</span><span>            <span style="color:#007020;font-weight:bold">let</span> guessDisplay <span style="color:#666">=</span> <span style="color:#007020">document</span>.createElement(<span style="color:#4070a0">&#34;div&#34;</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">240</span><span>            guessDisplay.className <span style="color:#666">=</span> <span style="color:#4070a0">&#34;guess&#34;</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">241</span><span>            <span style="color:#007020;font-weight:bold">for</span> (<span style="color:#007020;font-weight:bold">let</span> i <span style="color:#666">=</span> <span style="color:#40a070">0</span>; i <span style="color:#666">&lt;</span> <span style="color:#40a070">14</span>; i<span style="color:#666">++</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">242</span><span>                <span style="color:#007020;font-weight:bold">let</span> <span style="color:#007020;font-weight:bold">char</span> <span style="color:#666">=</span> guess[i];
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">243</span><span>                <span style="color:#007020;font-weight:bold">let</span> span <span style="color:#666">=</span> <span style="color:#007020">document</span>.createElement(<span style="color:#4070a0">&#34;span&#34;</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">244</span><span>                span.innerText <span style="color:#666">=</span> <span style="color:#007020;font-weight:bold">char</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">245</span><span>                <span style="color:#007020;font-weight:bold">if</span> (<span style="color:#007020;font-weight:bold">char</span> <span style="color:#666">===</span> currentPoem[i]) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">246</span><span>                    span.className <span style="color:#666">=</span> <span style="color:#4070a0">&#34;correct&#34;</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">247</span><span>                } <span style="color:#007020;font-weight:bold">else</span> <span style="color:#007020;font-weight:bold">if</span> (currentPoem.includes(<span style="color:#007020;font-weight:bold">char</span>)) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">248</span><span>                    span.className <span style="color:#666">=</span> <span style="color:#4070a0">&#34;present&#34;</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">249</span><span>                } <span style="color:#007020;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">250</span><span>                    span.className <span style="color:#666">=</span> <span style="color:#4070a0">&#34;absent&#34;</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">251</span><span>                }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">252</span><span>                guessDisplay.appendChild(span);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">253</span><span>            }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">254</span><span>            <span style="color:#007020">document</span>.getElementById(<span style="color:#4070a0">&#34;guesses&#34;</span>).appendChild(guessDisplay);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">255</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">256</span><span>            <span style="color:#007020;font-weight:bold">if</span> (guess <span style="color:#666">===</span> currentPoem) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">257</span><span>                <span style="color:#007020">document</span>.getElementById(<span style="color:#4070a0">&#34;message&#34;</span>).innerText <span style="color:#666">=</span> <span style="color:#4070a0">&#34;恭喜你，猜对了！&#34;</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">258</span><span>                <span style="color:#007020;font-weight:bold">return</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">259</span><span>            }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">260</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">261</span><span>            guessesLeft<span style="color:#666">--</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">262</span><span>            <span style="color:#007020">document</span>.getElementById(<span style="color:#4070a0">&#34;message&#34;</span>).innerText <span style="color:#666">=</span> <span style="color:#4070a0">`剩余猜测次数：</span><span style="color:#70a0d0">${</span>guessesLeft<span style="color:#70a0d0">}</span><span style="color:#4070a0">`</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">263</span><span>            <span style="color:#007020">document</span>.getElementById(<span style="color:#4070a0">&#34;guessInput&#34;</span>).value <span style="color:#666">=</span> <span style="color:#4070a0">&#34;&#34;</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">264</span><span>        }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">265</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">266</span><span>        <span style="color:#007020">window</span>.onload <span style="color:#666">=</span> <span style="color:#007020;font-weight:bold">function</span>() {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">267</span><span>            getRandomPoem();
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">268</span><span>        };
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">269</span><span>    &lt;/<span style="color:#062873;font-weight:bold">script</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">270</span><span>&lt;/<span style="color:#062873;font-weight:bold">body</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">271</span><span>&lt;/<span style="color:#062873;font-weight:bold">html</span>&gt;
+</span></span></code></pre></div>
+</content>
+<p>
+  
+  <a href="http://localhost:1313/blog/%E7%8E%A9/">#玩</a>
+  
+</p>
+
+  </main>
+  <footer>
+</footer>
+
+    
+</body>
+
+</html>
