@@ -2,25 +2,25 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>测评 on ʕ•ᴥ•ʔ 橙红色时雨 Blog</title>
-    <link>https://bie-zheng.github.io:1313/blog/%E6%B5%8B%E8%AF%84/</link>
+    <link>http://localhost:1313/blog/%E6%B5%8B%E8%AF%84/</link>
     <description>Recent content in 测评 on ʕ•ᴥ•ʔ 橙红色时雨 Blog</description>
     <generator>Hugo</generator>
     <language>en-US</language>
     <copyright>Copyright © 2025, 橙红色时雨.</copyright>
     <lastBuildDate>Thu, 10 Apr 2025 00:00:00 +0000</lastBuildDate>
-    <atom:link href="https://bie-zheng.github.io:1313/blog/%E6%B5%8B%E8%AF%84/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/blog/%E6%B5%8B%E8%AF%84/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>测评手机上的电子书阅读软件</title>
-      <link>https://bie-zheng.github.io:1313/%E6%B5%8B%E8%AF%84%E6%89%8B%E6%9C%BA%E4%B8%8A%E7%9A%84%E7%94%B5%E5%AD%90%E4%B9%A6%E9%98%85%E8%AF%BB%E8%BD%AF%E4%BB%B6/</link>
+      <link>http://localhost:1313/%E6%B5%8B%E8%AF%84%E6%89%8B%E6%9C%BA%E4%B8%8A%E7%9A%84%E7%94%B5%E5%AD%90%E4%B9%A6%E9%98%85%E8%AF%BB%E8%BD%AF%E4%BB%B6/</link>
       <pubDate>Thu, 10 Apr 2025 00:00:00 +0000</pubDate>
-      <guid>https://bie-zheng.github.io:1313/%E6%B5%8B%E8%AF%84%E6%89%8B%E6%9C%BA%E4%B8%8A%E7%9A%84%E7%94%B5%E5%AD%90%E4%B9%A6%E9%98%85%E8%AF%BB%E8%BD%AF%E4%BB%B6/</guid>
+      <guid>http://localhost:1313/%E6%B5%8B%E8%AF%84%E6%89%8B%E6%9C%BA%E4%B8%8A%E7%9A%84%E7%94%B5%E5%AD%90%E4%B9%A6%E9%98%85%E8%AF%BB%E8%BD%AF%E4%BB%B6/</guid>
       <description>&lt;h1 id=&#34;开源阅读&#34;&gt;开源阅读&lt;/h1&gt;&#xA;&lt;p&gt;神中神，无论是读网文还是别的，排版都可以自定义的很好看，如果不会排版可以去参考一下微信读书的排版。&lt;/p&gt;&#xA;&lt;p&gt;而且开源阅读主攻的是网文，所以读网文啥的用这个挺好的。&lt;/p&gt;&#xA;&lt;p&gt;且打开txt速度飞快，操作比较流畅。&lt;/p&gt;&#xA;&lt;p&gt;对于云端同步书籍，做不到一键同步，得手动上传下载，有点麻烦，所以几乎不用。&lt;/p&gt;&#xA;&lt;h1 id=&#34;微信读书&#34;&gt;微信读书&lt;/h1&gt;&#xA;&lt;p&gt;神中神2，微信读书的主要是读出版书比较方便，我大部分阅读的书都是导入到微信读书再去读。&lt;/p&gt;&#xA;&lt;p&gt;除了会员比较贵没有别的缺点了，但是会员贵也可以通过闲鱼上买会员，或者是通过免费无限卡兑换付费无限卡解决。&lt;/p&gt;&#xA;&lt;p&gt;优点是多平台同步比较方便，无论是墨水屏，手机，还是电脑都可以无缝衔接。&lt;/p&gt;&#xA;&lt;p&gt;墨水屏也有专门的墨水屏版本。&lt;/p&gt;&#xA;&lt;h1 id=&#34;neat-reader&#34;&gt;Neat Reader&lt;/h1&gt;&#xA;&lt;p&gt;终身版本，太nm贵了，150入的。&lt;/p&gt;&#xA;&lt;p&gt;但是用着用着感觉不值这个价格，一方面是它的排版很多不可调，明显不成熟，但是团队已经满足于此了，很久都没有大更新。&lt;/p&gt;&#xA;&lt;p&gt;还有是部分epub文件比较大，打开的也会比较慢，甚至完全打不开。&lt;/p&gt;&#xA;&lt;p&gt;在墨水屏上面没有做适配，导致墨水屏阅读的时候会跳页，也就是你明明点的是下一页，但是它给你跳回上一页。你要来回翻，很影响阅读体验。&lt;/p&gt;&#xA;&lt;h1 id=&#34;koodo-reader&#34;&gt;koodo Reader&lt;/h1&gt;&#xA;&lt;p&gt;最近刚刚试用，发现打开txt比较慢，当然它的优点也是有的，就是便宜，而且&lt;strong&gt;私密性比较好&lt;/strong&gt;，支持webdav，S3，还有google Drive等等网盘。&lt;/p&gt;&#xA;&lt;p&gt;阅读排版也可以自定义，综合下来效果还行。&lt;/p&gt;&#xA;&lt;p&gt;而且也是全平台的，支持linux，windows，网页和手机端。&lt;/p&gt;&#xA;&lt;p&gt;现在的价格是每年25r，不买就只支持webdav。&lt;/p&gt;&#xA;&lt;h1 id=&#34;koreader&#34;&gt;koreader&lt;/h1&gt;&#xA;&lt;p&gt;开源免费，打开速度快，本地阅读。&lt;/p&gt;&#xA;&lt;p&gt;专门为墨水屏做的，连漫画cbz都能阅读，简直神中神。&lt;/p&gt;&#xA;&lt;p&gt;当然缺点也是有的，比如说操作逻辑太生硬了，不像一般的应用。&lt;/p&gt;&#xA;&lt;p&gt;也可以配置云端等等，建议设置书籍状态文件保存到某个特定文件夹下面，不然你在哪个目录打开文件，它的配置文件就在哪创建，简直是到处拉屎。&lt;/p&gt;&#xA;&lt;p&gt;这个设置在：设置&amp;gt;文档&amp;gt;书籍元数据文件夹&lt;/p&gt;&#xA;&lt;h1 id=&#34;readest&#34;&gt;readest&lt;/h1&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://github.com/readest/readest&#34;&gt;https://github.com/readest/readest&lt;/a&gt;&lt;/p&gt;&#xA;&lt;p&gt;相当于自带网盘给你用，数据全部存储在云端，目前没有收费的计划。&lt;/p&gt;&#xA;&lt;p&gt;自带500M空间，一半epub什么的够用，手机上略显卡顿，需要科学上网环境。&lt;/p&gt;&#xA;&lt;h1 id=&#34;librera-fd&#34;&gt;librera FD&lt;/h1&gt;&#xA;&lt;p&gt;仅推荐在F-Droid上下载的版本，google play版本有广告，且很多阅读器不支持google框架。&lt;/p&gt;&#xA;&lt;p&gt;打开本地书籍的速度很快，支持你想到的所有阅读器的功能，支持漫画，替换文本，自定义布局等等等等。&lt;/p&gt;&#xA;&lt;p&gt;一个完美的本地书籍阅读器，比koreader好，有这个几乎可以把koreader扔掉了。&lt;/p&gt;&#xA;&lt;p&gt;且用起来比moon reader顺手，至少我个人的评价是这样，moon reader付费困难就不评价了。&lt;/p&gt;</description>
     </item>
     <item>
       <title>漫画软件测评</title>
-      <link>https://bie-zheng.github.io:1313/%E6%BC%AB%E7%94%BB%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%84/</link>
+      <link>http://localhost:1313/%E6%BC%AB%E7%94%BB%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%84/</link>
       <pubDate>Thu, 10 Apr 2025 00:00:00 +0000</pubDate>
-      <guid>https://bie-zheng.github.io:1313/%E6%BC%AB%E7%94%BB%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%84/</guid>
+      <guid>http://localhost:1313/%E6%BC%AB%E7%94%BB%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%84/</guid>
       <description>&lt;h1 id=&#34;tachiyomi&#34;&gt;tachiyomi&lt;/h1&gt;&#xA;&lt;p&gt;分类什么的比较混乱，包括第三方的yokai，分类感觉都有些混乱，不太好看。&lt;/p&gt;&#xA;&lt;p&gt;tachiyomi适合那种看网络漫画的，看本子什么的，本地漫画感觉用起来别扭。&lt;/p&gt;&#xA;&lt;h1 id=&#34;komga&#34;&gt;Komga&lt;/h1&gt;&#xA;&lt;p&gt;适合有nas的人用，当然也可以用tachiyomi阅读Komga上的内容，当然我没有nas我就放弃了。&lt;/p&gt;&#xA;&lt;p&gt;嵌套文件夹会识别成一本漫画的不同章节，放弃。&lt;/p&gt;&#xA;&lt;h1 id=&#34;kuro-reader&#34;&gt;Kuro Reader++&lt;/h1&gt;&#xA;&lt;p&gt;本地版本的漫画阅读器，可以用FolderSync同步网盘和本地内容，使用起来比较方便。&lt;/p&gt;&#xA;&lt;p&gt;但是只能用于安卓，没法用电脑看就是个问题。&lt;/p&gt;&#xA;&lt;p&gt;不过其实也还好，在电脑上可以用Sumatra PDF阅读cbz文件。&lt;/p&gt;&#xA;&lt;p&gt;比较好的是他会自动识别文件夹，嵌套文件夹的逻辑支持的比较好&lt;/p&gt;</description>
     </item>
   </channel>
