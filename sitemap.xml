@@ -2,16 +2,19 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://bie-zheng.github.io/%E7%8B%AC%E8%A3%81%E8%80%85%E6%89%8B%E5%86%8C/</loc>
-    <lastmod>2025-05-16T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://bie-zheng.github.io/blog/</loc>
-    <lastmod>2025-05-16T00:00:00+00:00</lastmod>
+    <lastmod>2025-06-06T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://bie-zheng.github.io/%E6%96%87%E4%BB%B6%E6%95%B4%E7%90%86%E5%A4%87%E4%BB%BD%E7%9A%84%E9%80%BB%E8%BE%91%E5%92%8C%E5%8E%9F%E5%88%99/</loc>
+    <lastmod>2025-06-06T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://bie-zheng.github.io/blog/%E6%9D%82%E8%B0%88/</loc>
-    <lastmod>2025-05-16T00:00:00+00:00</lastmod>
+    <lastmod>2025-06-06T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://bie-zheng.github.io/</loc>
+    <lastmod>2025-06-06T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://bie-zheng.github.io/%E7%8B%AC%E8%A3%81%E8%80%85%E6%89%8B%E5%86%8C/</loc>
     <lastmod>2025-05-16T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://bie-zheng.github.io/%E6%8A%80%E6%9C%AF%E5%B0%81%E5%BB%BA%E4%B8%BB%E4%B9%89/</loc>
